@@ -4,7 +4,7 @@ import "contracts-manager/internal/infrastructure/db/models"
 
 func ParseAuthUserFromUserModel(user *models.User) *AuthUser {
 	return &AuthUser{
-		Id:   user.ID,
+		ID:   user.ID,
 		Type: user.Type,
 	}
 }

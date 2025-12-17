@@ -13,12 +13,12 @@ func ParseUserIDFromJWTClaims(claims jwt.Claims) (uuid.UUID, error) {
 
 	userIDValue, ok := mapClaims["userID"]
 	if !ok {
-		return uuid.Nil, ErrFailedToParseTokenUserId
+		return uuid.Nil, ErrFailedToParseTokenUserID
 	}
 
 	userIDStr, ok := userIDValue.(string)
 	if !ok {
-		return uuid.Nil, ErrFailedToParseTokenUserId
+		return uuid.Nil, ErrFailedToParseTokenUserID
 	}
 
 	userID, err := uuid.Parse(userIDStr)

@@ -38,12 +38,12 @@ func (p *JWTProvider) generateToken(userID uuid.UUID, age int, tokenType string)
 	return signedToken, nil
 }
 
-func (p *JWTProvider) GenerateAccessToken(userId uuid.UUID) (string, error) {
-	return p.generateToken(userId, 15*60, "access")
+func (p *JWTProvider) GenerateAccessToken(userID uuid.UUID) (string, error) {
+	return p.generateToken(userID, 15*60, "access")
 }
 
-func (p *JWTProvider) GenerateRefreshToken(userId uuid.UUID) (string, error) {
-	return p.generateToken(userId, utils.Week, "refresh")
+func (p *JWTProvider) GenerateRefreshToken(userID uuid.UUID) (string, error) {
+	return p.generateToken(userID, utils.Week, "refresh")
 }
 
 func (p *JWTProvider) ValidateToken(tokenStr string) bool {

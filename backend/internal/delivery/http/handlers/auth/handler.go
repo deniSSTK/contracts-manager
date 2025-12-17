@@ -24,8 +24,8 @@ func NewHandler(authUC *authusecase.Usecase) *Handler {
 	}
 }
 
-func (h *Handler) tokenGeneration(c *gin.Context, userId uuid.UUID) {
-	refreshToken, err := h.jwtProvider.GenerateRefreshToken(userId)
+func (h *Handler) tokenGeneration(c *gin.Context, userID uuid.UUID) {
+	refreshToken, err := h.jwtProvider.GenerateRefreshToken(userID)
 	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
@@ -33,7 +33,7 @@ func (h *Handler) tokenGeneration(c *gin.Context, userId uuid.UUID) {
 
 	cookie.SetCookie(c, cookie.RefreshToken, refreshToken, utils.Week)
 
-	accessToken, err := h.jwtProvider.GenerateAccessToken(userId)
+	accessToken, err := h.jwtProvider.GenerateAccessToken(userID)
 	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
@@ -49,13 +49,13 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.authUC.Login(c.Request.Context(), dto)
+	userID, err := h.authUC.Login(c.Request.Context(), dto)
 	if err != nil {
 		context.RespondError(c, http.StatusUnauthorized, err)
 		return
 	}
 
-	h.tokenGeneration(c, userId)
+	h.tokenGeneration(c, userID)
 }
 
 func (h *Handler) Signup(c *gin.Context) {
@@ -65,11 +65,11 @@ func (h *Handler) Signup(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.authUC.Signup(c.Request.Context(), dto)
+	userID, err := h.authUC.Signup(c.Request.Context(), dto)
 	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.tokenGeneration(c, userId)
+	h.tokenGeneration(c, userID)
 }

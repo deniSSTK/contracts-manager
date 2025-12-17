@@ -14,7 +14,7 @@ func GetUUIDFromParam(c *gin.Context) (uuid.UUID, error) {
 	}
 
 	if id == uuid.Nil {
-		return uuid.Nil, ErrNilIdAfterParseParam
+		return uuid.Nil, ErrNilIDAfterParseParam
 	}
 
 	return id, nil

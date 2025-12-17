@@ -19,23 +19,23 @@ func NewUserRepository(baseRepository BaseRepository) *UserRepository {
 }
 
 func (r *UserRepository) Insert(ctx context.Context, dto auth.SignupDTO, passwordHash string) (uuid.UUID, error) {
-	user := models.User{
+	newUser := models.User{
 		Username:     dto.Username,
 		Email:        dto.Email,
 		PasswordHash: passwordHash,
 		Type:         models.UserTypeRegular,
 	}
 
-	if err := r.DB.WithContext(ctx).Create(&user).Error; err != nil {
+	if err := r.db.WithContext(ctx).Create(&newUser).Error; err != nil {
 		return uuid.Nil, err
 	}
 
-	return user.ID, nil
+	return newUser.ID, nil
 }
 
 func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	var user models.User
-	if err := r.DB.WithContext(ctx).First(&user, "id = ?", id).Error; err != nil {
+	if err := r.db.WithContext(ctx).First(&user, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 func (r *UserRepository) GetPasswordHashByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (string, error) {
 	var passwordHash string
 
-	err := r.DB.WithContext(ctx).
+	err := r.db.WithContext(ctx).
 		Model(&models.User{}).
 		Select("password_hash").
 		Where("username = ? OR email = ?", usernameOrEmail, usernameOrEmail).
@@ -61,7 +61,7 @@ func (r *UserRepository) GetPasswordHashByUsernameOrEmail(ctx context.Context, u
 func (r *UserRepository) GetUserIDByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (uuid.UUID, error) {
 	var user models.User
 
-	err := r.DB.WithContext(ctx).
+	err := r.db.WithContext(ctx).
 		Where("username = ? OR email = ?", usernameOrEmail, usernameOrEmail).
 		First(&user).Error
 
@@ -74,7 +74,7 @@ func (r *UserRepository) GetUserIDByUsernameOrEmail(ctx context.Context, usernam
 
 func (r *UserRepository) CheckEmailExists(ctx context.Context, email string) (bool, error) {
 	var count int64
-	if err := r.DB.WithContext(ctx).
+	if err := r.db.WithContext(ctx).
 		Model(&models.User{}).
 		Where("email = ?", email).
 		Count(&count).Error; err != nil {

@@ -3,7 +3,7 @@ package context
 import "errors"
 
 var (
-	ErrNilIdAfterParseParam = errors.New("nil id after parse param")
+	ErrNilIDAfterParseParam = errors.New("nil id after parse param")
 
 	ErrContextValueNotFound = errors.New("value not found in contex")
 	ErrInvalidContextType   = errors.New("invalid type for context value")

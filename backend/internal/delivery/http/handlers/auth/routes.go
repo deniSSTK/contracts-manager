@@ -3,18 +3,18 @@ package authhandler
 import "github.com/gin-gonic/gin"
 
 type Routes struct {
-	Handler *Handler
+	handler *Handler
 }
 
 func NewRoutes(handler *Handler) *Routes {
 	return &Routes{
-		Handler: handler,
+		handler: handler,
 	}
 }
 
 func (r *Routes) RegisterRoutes(routes *gin.RouterGroup) {
 	group := routes.Group("/auth")
 
-	group.POST("/login", r.Handler.Login)
-	group.POST("/signup", r.Handler.Signup)
+	group.POST("/login", r.handler.Login)
+	group.POST("/signup", r.handler.Signup)
 }

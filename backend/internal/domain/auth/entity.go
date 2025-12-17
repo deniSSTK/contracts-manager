@@ -7,6 +7,6 @@ import (
 )
 
 type AuthUser struct {
-	Id   uuid.UUID
+	ID   uuid.UUID
 	Type models.UserType
 }
