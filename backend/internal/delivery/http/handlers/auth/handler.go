@@ -1,0 +1,75 @@
+package authhandler
+
+import (
+	"contracts-manager/internal/domain/auth"
+	"contracts-manager/internal/infrastructure/token"
+	authusecase "contracts-manager/internal/usecases/auth"
+	"contracts-manager/internal/utils"
+	"contracts-manager/internal/utils/context"
+	"contracts-manager/internal/utils/cookie"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
+
+type Handler struct {
+	jwtProvider *token.JWTProvider
+	authUC      *authusecase.Usecase
+}
+
+func NewHandler(authUC *authusecase.Usecase) *Handler {
+	return &Handler{
+		authUC: authUC,
+	}
+}
+
+func (h *Handler) tokenGeneration(c *gin.Context, userId uuid.UUID) {
+	refreshToken, err := h.jwtProvider.GenerateRefreshToken(userId)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	cookie.SetCookie(c, cookie.RefreshToken, refreshToken, utils.Week)
+
+	accessToken, err := h.jwtProvider.GenerateAccessToken(userId)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusCreated, gin.H{"accessToken": accessToken})
+}
+
+func (h *Handler) Login(c *gin.Context) {
+	var dto auth.LoginDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		context.RespondError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	userId, err := h.authUC.Login(c.Request.Context(), dto)
+	if err != nil {
+		context.RespondError(c, http.StatusUnauthorized, err)
+		return
+	}
+
+	h.tokenGeneration(c, userId)
+}
+
+func (h *Handler) Signup(c *gin.Context) {
+	var dto auth.SignupDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		context.RespondError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	userId, err := h.authUC.Signup(c.Request.Context(), dto)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.tokenGeneration(c, userId)
+}
