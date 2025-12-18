@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import authUsecase from "@usecase/auth/usecase";
+import {IAuthResponse} from "@repository/auth/repository";
 
 export interface AuthUser {
     id: string;
@@ -11,22 +12,28 @@ export type UserType = 'regular' | 'admin'
 const useAuthStore = defineStore('auth', {
     state: () => ({
         accessToken: null as string | null,
+        exp: null as number | null,
         authUser: null as AuthUser | null,
         loaded: false
     }),
 
     getters: {
-        isAuthenticated: (state) => !!state.accessToken && !!state.authUser,
+        isAuthenticated: (state) => {
+            if (!state.accessToken || !state.authUser || !state.exp) return false
+            const now = Math.floor(Date.now() / 1000)
+            return state.exp > now
+        },
     },
 
     actions: {
-        setAccessToken(token: string): void {
-            this.accessToken = token
+        setAccessToken(tokenInfo: IAuthResponse): void {
+            this.accessToken = tokenInfo.accessToken
+            this.exp = tokenInfo.exp
         },
 
         async setAccessTokenRequest(): Promise<void> {
             const data = await authUsecase.refreshAccessToken()
-            this.setAccessToken(data.accessToken)
+            this.setAccessToken(data)
         },
 
         async setAuthUserRequest(): Promise<void> {
@@ -42,9 +49,9 @@ const useAuthStore = defineStore('auth', {
             }
         },
 
-        async setAllWithToken(token: string): Promise<void> {
+        async setAllWithToken(tokenInfo: IAuthResponse): Promise<void> {
             try {
-                this.setAccessToken(token)
+                this.setAccessToken(tokenInfo)
                 await this.setAuthUserRequest()
             } finally {
                 this.loaded = true
@@ -54,6 +61,8 @@ const useAuthStore = defineStore('auth', {
         logout(): void {
             this.accessToken = null
             this.authUser = null
+            this.exp = null
+            this.loaded = false
         },
     },
 })

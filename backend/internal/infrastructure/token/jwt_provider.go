@@ -4,7 +4,6 @@ import (
 	"contracts-manager/internal/domain/auth"
 	"contracts-manager/internal/infrastructure/config"
 	"contracts-manager/internal/infrastructure/logger"
-	"contracts-manager/internal/utils"
 	"time"
 
 	"github.com/form3tech-oss/jwt-go"
@@ -20,30 +19,44 @@ func NewJWTProvider(cfg *config.Config, log *logger.Logger) *JWTProvider {
 	return &JWTProvider{secretKey: cfg.JWTSecret, log: log}
 }
 
-func (p *JWTProvider) generateToken(userID uuid.UUID, age int, tokenType string) (string, error) {
+func (p *JWTProvider) generateToken(userID uuid.UUID, duration time.Duration, tokenType string) (string, int64, error) {
+	expiration := time.Now().Add(duration).Unix()
+
 	claims := jwt.MapClaims{
 		"userID": userID,
-		"exp":    time.Now().Add(time.Duration(age) * time.Second).Unix(),
+		"exp":    expiration,
 		"type":   tokenType,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := token.SignedString([]byte(p.secretKey))
-
 	if err != nil {
 		p.log.Errorf(ErrFailedToSignToken(tokenType), err)
-		return "", err
+		return "", 0, err
 	}
 
-	return signedToken, nil
+	return signedToken, expiration, nil
 }
 
-func (p *JWTProvider) GenerateAccessToken(userID uuid.UUID) (string, error) {
-	return p.generateToken(userID, 15*60, "access")
+func (p *JWTProvider) GenerateAccessToken(userID uuid.UUID) (auth.AuthResponse, error) {
+	token, exp, err := p.generateToken(userID, 1*time.Minute, "refresh")
+	if err != nil {
+		return auth.AuthResponse{}, err
+	}
+
+	return auth.AuthResponse{
+		AccessToken: token,
+		Exp:         exp,
+	}, nil
 }
 
 func (p *JWTProvider) GenerateRefreshToken(userID uuid.UUID) (string, error) {
-	return p.generateToken(userID, utils.Week, "refresh")
+	token, _, err := p.generateToken(userID, 7*24*time.Hour, "refresh")
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
 func (p *JWTProvider) ValidateToken(tokenStr string) bool {
@@ -82,10 +95,10 @@ func (p *JWTProvider) ParseUserID(tokenStr string) (uuid.UUID, error) {
 	return auth.ParseUserIDFromJWTClaims(token.Claims)
 }
 
-func (p *JWTProvider) RefreshAccessToken(token string) (string, error) {
+func (p *JWTProvider) RefreshAccessToken(token string) (auth.AuthResponse, error) {
 	userID, err := p.ParseUserID(token)
 	if err != nil {
-		return "", err
+		return auth.AuthResponse{}, err
 	}
 
 	return p.GenerateAccessToken(userID)

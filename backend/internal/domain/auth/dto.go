@@ -10,3 +10,8 @@ type SignupDTO struct {
 	Email    string `binding:"required,email" json:"email"`
 	Password string `binding:"required,min=6" json:"password"`
 }
+
+type AuthResponse struct {
+	AccessToken string `json:"accessToken"`
+	Exp         int64  `json:"exp"`
+}

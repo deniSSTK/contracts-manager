@@ -12,17 +12,13 @@ export class Api {
 
     private async getAuthHeaders(): Promise<Record<string, string>> {
         const authStore = useAuthStore();
+        const now = Math.floor(Date.now() / 1000);
 
-        if (!authStore.isAuthenticated || !authStore.accessToken) {
+        if (!authStore.accessToken || !authStore.exp || authStore.exp <= now) {
             await authStore.setAccessTokenRequest();
-
-            if (authStore.accessToken) {
-                return {
-                    Authorization: `Bearer ${authStore.accessToken}`,
-                };
-            }
-            return {};
         }
+
+        if (!authStore.accessToken) return {};
 
         return {
             Authorization: `Bearer ${authStore.accessToken}`,

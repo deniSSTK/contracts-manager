@@ -12,23 +12,24 @@ export interface ILoginDTO {
     password: string;
 }
 
-export interface IAccessTokenResponse {
+export interface IAuthResponse {
     accessToken: string;
+    exp: number;
 }
 
 export class AuthRepository {
     private readonly api: Api = api;
 
-    async refreshAccessToken(): Promise<IAccessTokenResponse> {
+    async refreshAccessToken(): Promise<IAuthResponse> {
         return this.api.get("/auth/refresh/access", { auth: false })
     }
 
-    async signup(dto: ISignupDTO): Promise<IAccessTokenResponse> {
+    async signup(dto: ISignupDTO): Promise<IAuthResponse> {
         return this.api.post("/auth/signup", dto, { auth: false })
     }
 
-    async login(dto: ILoginDTO): Promise<IAccessTokenResponse> {
-        return this.api.post("/auth/login", dto, { auth: false })
+    async login(dto: ILoginDTO): Promise<IAuthResponse> {
+        return await this.api.post("/auth/login", dto, { auth: false })
     }
 
     async getAuthUser(): Promise<AuthUser> {

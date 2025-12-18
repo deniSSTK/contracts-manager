@@ -37,13 +37,13 @@ func (h *Handler) tokenGeneration(c *gin.Context, userID uuid.UUID) {
 
 	cookie.SetCookie(c, cookie.RefreshToken, refreshToken, utils.Week)
 
-	accessToken, err := h.jwtProvider.GenerateAccessToken(userID)
+	accessTokenInfo, err := h.jwtProvider.GenerateAccessToken(userID)
 	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	context.RespondWithValue(c, http.StatusCreated, gin.H{"accessToken": accessToken})
+	context.RespondWithValue(c, http.StatusCreated, accessTokenInfo)
 }
 
 func (h *Handler) Login(c *gin.Context) {
@@ -90,13 +90,13 @@ func (h *Handler) RefreshAccessToken(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := h.jwtProvider.RefreshAccessToken(refreshToken)
+	accessTokenInfo, err := h.jwtProvider.RefreshAccessToken(refreshToken)
 	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	context.RespondWithValue(c, http.StatusCreated, gin.H{"accessToken": accessToken})
+	context.RespondWithValue(c, http.StatusCreated, accessTokenInfo)
 	return
 }
 

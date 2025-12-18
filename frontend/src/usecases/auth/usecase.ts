@@ -1,10 +1,10 @@
-import authRepository, {AuthRepository, IAccessTokenResponse, ILoginDTO, ISignupDTO} from "@repository/auth/repository";
+import authRepository, {AuthRepository, IAuthResponse, ILoginDTO, ISignupDTO} from "@repository/auth/repository";
 import useAuthStore, {AuthUser} from "@store/auth/store";
 
 export class AuthUsecase {
     private authRepository: AuthRepository = authRepository;
 
-    async refreshAccessToken(): Promise<IAccessTokenResponse> {
+    async refreshAccessToken(): Promise<IAuthResponse> {
         return this.authRepository.refreshAccessToken();
     }
 
@@ -12,8 +12,8 @@ export class AuthUsecase {
         const authStore = useAuthStore()
 
         try {
-            const data = await this.authRepository.signup(dto);
-            await authStore.setAllWithToken(data.accessToken)
+            const data = await this.authRepository.signup(dto)
+            await authStore.setAllWithToken(data)
         } catch {
             return false
         }
@@ -25,7 +25,7 @@ export class AuthUsecase {
 
         try {
             const data = await this.authRepository.login(dto)
-            await authStore.setAllWithToken(data.accessToken)
+            await authStore.setAllWithToken(data)
         } catch {
             return false
         }
