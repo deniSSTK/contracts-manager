@@ -5,20 +5,27 @@ import (
 	"contracts-manager/internal/domain/person"
 	"contracts-manager/internal/infrastructure/db/models"
 	"contracts-manager/internal/infrastructure/db/repositories"
-	"encoding/csv"
+	fileusecase "contracts-manager/internal/usecases/file"
 	"encoding/json"
 	"io"
-	"strconv"
 
 	"github.com/google/uuid"
 )
 
 type Usecase struct {
-	personRepo *repositories.PersonRepository
+	personRepo  *repositories.PersonRepository
+	fileUsecase *fileusecase.Usecase[models.Person, person.CreateDTO]
 }
 
-func NewUsecase(personRepo *repositories.PersonRepository) *Usecase {
-	return &Usecase{personRepo}
+func NewUsecase(
+	personRepo *repositories.PersonRepository,
+) *Usecase {
+	return &Usecase{
+		personRepo: personRepo,
+		fileUsecase: fileusecase.NewUsecase[models.Person, person.CreateDTO](
+			repositories.NewStreamRepository[models.Person](personRepo.BaseRepository),
+		),
+	}
 }
 
 func (uc *Usecase) Create(ctx context.Context, dto person.CreateDTO) (uuid.UUID, error) {
@@ -63,110 +70,59 @@ func (uc *Usecase) List(ctx context.Context, filter person.PersonFilter) (*perso
 	return uc.personRepo.List(ctx, filter)
 }
 
-func (uc *Usecase) ImportJSON(
-	ctx context.Context,
-	reader io.Reader,
-) (int, []string) {
-	decoder := json.NewDecoder(reader)
-	var imported int
-	var errors []string
-
-	_, err := decoder.Token()
-	if err != nil {
-		return 0, []string{"invalid JSON"}
-	}
-
-	i := 0
-	for decoder.More() {
-		var dto person.CreateDTO
-		if err = decoder.Decode(&dto); err != nil {
-			errors = append(errors, "row "+strconv.Itoa(i)+": "+err.Error())
-			i++
-			continue
-		}
-
-		_, err = uc.personRepo.Create(ctx, dto)
-		if err != nil {
-			errors = append(errors, "row "+strconv.Itoa(i)+": "+err.Error())
-		} else {
-			imported++
-		}
-		i++
-	}
-
-	return imported, errors
+func (uc *Usecase) ImportJSON(ctx context.Context, reader io.Reader) (int, []string) {
+	return uc.fileUsecase.ImportJSON(
+		ctx,
+		reader,
+		func(ctx context.Context, dto person.CreateDTO) error {
+			_, err := uc.personRepo.Create(ctx, dto)
+			return err
+		},
+		func(decoder *json.Decoder) (person.CreateDTO, error) {
+			var dto person.CreateDTO
+			err := decoder.Decode(&dto)
+			return dto, err
+		},
+	)
 }
 
-func (uc *Usecase) ImportCSV(
-	ctx context.Context,
-	reader io.Reader,
-) (int, []string) {
-	r := csv.NewReader(reader)
-	imported := 0
-	var errors []string
-
-	headers, err := r.Read()
-	if err != nil {
-		return 0, []string{"cannot read CSV header"}
-	}
-
-	rowIndex := 1
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			errors = append(errors, "row "+strconv.Itoa(rowIndex)+": "+err.Error())
-			rowIndex++
-			continue
-		}
-
-		dto := person.CreateDTO{}
-		for i, h := range headers {
-			switch h {
-			case "type":
-				dto.Type = models.PersonType(record[i])
-			case "name":
-				dto.Name = record[i]
-			case "code":
-				dto.Code = record[i]
-			case "email":
-				if record[i] != "" {
-					dto.Email = &record[i]
-				}
-			case "phone":
-				if record[i] != "" {
-					dto.Phone = &record[i]
+func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []string) {
+	return uc.fileUsecase.ImportCSV(
+		ctx,
+		reader,
+		func(ctx context.Context, dto person.CreateDTO) error {
+			_, err := uc.personRepo.Create(ctx, dto)
+			return err
+		},
+		func(fileHeaders, record []string) (person.CreateDTO, error) {
+			dto := person.CreateDTO{}
+			for i, h := range fileHeaders {
+				switch h {
+				case "type":
+					dto.Type = models.PersonType(record[i])
+				case "name":
+					dto.Name = record[i]
+				case "code":
+					dto.Code = record[i]
+				case "email":
+					if record[i] != "" {
+						dto.Email = &record[i]
+					}
+				case "phone":
+					if record[i] != "" {
+						dto.Phone = &record[i]
+					}
 				}
 			}
-		}
-
-		_, err = uc.personRepo.Create(ctx, dto)
-		if err != nil {
-			errors = append(errors, "row "+strconv.Itoa(rowIndex)+": "+err.Error())
-		} else {
-			imported++
-		}
-		rowIndex++
-	}
-
-	return imported, errors
+			return dto, nil
+		},
+	)
 }
 
-func (uc *Usecase) ExportCSV(
-	ctx context.Context,
-	w io.Writer,
-) error {
-	cw := csv.NewWriter(w)
+func (uc *Usecase) ExportCSV(ctx context.Context, w io.Writer) error {
+	headers := []string{"id", "type", "name", "code", "email", "phone"}
 
-	if err := cw.Write([]string{
-		"id", "type", "name", "code", "email", "phone",
-	}); err != nil {
-		return err
-	}
-
-	err := uc.personRepo.StreamAll(ctx, func(p models.Person) error {
+	return uc.fileUsecase.ExportCSV(ctx, w, headers, func(p models.Person) []string {
 		record := []string{
 			p.ID.String(),
 			string(p.Type),
@@ -186,40 +142,10 @@ func (uc *Usecase) ExportCSV(
 			record = append(record, "")
 		}
 
-		return cw.Write(record)
+		return record
 	})
-
-	cw.Flush()
-	return err
 }
 
-func (uc *Usecase) ExportJSON(
-	ctx context.Context,
-	w io.Writer,
-) error {
-	enc := json.NewEncoder(w)
-
-	if _, err := w.Write([]byte("[")); err != nil {
-		return err
-	}
-
-	first := true
-
-	err := uc.personRepo.StreamAll(ctx, func(p models.Person) error {
-		if !first {
-			if _, err := w.Write([]byte(",")); err != nil {
-				return err
-			}
-		}
-		first = false
-
-		return enc.Encode(p)
-	})
-
-	if err != nil {
-		return err
-	}
-
-	_, err = w.Write([]byte("]"))
-	return err
+func (uc *Usecase) ExportJSON(ctx context.Context, w io.Writer) error {
+	return uc.fileUsecase.ExportJSON(ctx, w)
 }

@@ -1,4 +1,4 @@
-package personhandler
+package fileheader
 
 import "errors"
 

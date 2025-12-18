@@ -1,6 +1,7 @@
 package personhandler
 
 import (
+	filehandler "contracts-manager/internal/delivery/http/file"
 	"contracts-manager/internal/domain/person"
 	personusecase "contracts-manager/internal/usecases/person"
 	"contracts-manager/internal/utils/context"
@@ -129,63 +130,9 @@ func (h *Handler) List(c *gin.Context) {
 }
 
 func (h *Handler) Import(c *gin.Context) {
-	fileHeader, err := c.FormFile("file")
-	if err != nil {
-		context.RespondError(c, http.StatusBadRequest, err)
-		return
-	}
-
-	file, err := fileHeader.Open()
-	if err != nil {
-		context.RespondError(c, http.StatusInternalServerError, err)
-		return
-	}
-	defer file.Close()
-
-	var imported int
-	var errors []string
-
-	switch fileHeader.Header.Get("Content-Type") {
-	case "application/json":
-		imported, errors = h.personUC.ImportJSON(c.Request.Context(), file)
-	case "text/csv", "application/vnd.ms-excel":
-		imported, errors = h.personUC.ImportCSV(c.Request.Context(), file)
-	default:
-		context.RespondError(c, http.StatusBadRequest, ErrUnsupportedFileType)
-		return
-	}
-
-	context.RespondWithValue(c, http.StatusOK, gin.H{
-		"imported": imported,
-		"errors":   errors,
-	})
+	filehandler.Import(c, h.personUC)
 }
 
 func (h *Handler) Export(c *gin.Context) {
-	format := c.DefaultQuery("format", "csv")
-
-	ctx := c.Request.Context()
-
-	switch format {
-	case "csv":
-		c.Header("Content-Type", "text/csv")
-		c.Header("Content-Disposition", `attachment; filename="persons.csv"`)
-
-		err := h.personUC.ExportCSV(ctx, c.Writer)
-		if err != nil {
-			context.RespondError(c, http.StatusInternalServerError, err)
-		}
-
-	case "json":
-		c.Header("Content-Type", "application/json")
-		c.Header("Content-Disposition", `attachment; filename="persons.json"`)
-
-		err := h.personUC.ExportJSON(ctx, c.Writer)
-		if err != nil {
-			context.RespondError(c, http.StatusInternalServerError, err)
-		}
-
-	default:
-		context.RespondError(c, http.StatusBadRequest, ErrUnsupportedFileType)
-	}
+	filehandler.Export(c, h.personUC)
 }
