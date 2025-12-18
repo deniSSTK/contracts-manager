@@ -1,8 +1,44 @@
+:root {
+    --white: #fff;
+    --black: #000;
+
+    --color-primary: #46e590;
+    --color-primary-hover: #40dc89;
+
+    --tr-duration: .3s;
+
+    --padding-md: 8px;
+    --padding-md-comp: 6px 10px;
+
+    --border-sm: 4px;
+    --border-md: calc(var(--border-sm) * 2);
+
+    --font-size-md: 16px;
+    --font-size-lg: 48px;
+
+    --gap-md: 32px;
+}
+
 * {
     box-sizing: border-box;
+    font-family: "Zalando Sans Expanded", sans-serif;;
 }
 
 html, body {
     margin: 0;
     padding: 0;
+}
+
+h1 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+}
+
+a {
+    text-decoration: none;
+    color: var(--black);
+}
+
+.primary {
+    color: var(--color-primary);
 }

@@ -1,0 +1,14 @@
+.input {
+    width: 100%;
+    padding: var(--padding-md-comp);
+    font-size: var(--font-size-md);
+    border: 2px solid var(--black);
+    border-radius: var(--border-md);
+    outline: none;
+    transition: var(--tr-duration);
+
+    &:focus {
+        border-color: var(--color-primary);
+        border-width: 2px;
+    }
+}
