@@ -53,7 +53,7 @@ func (h *Handler) Get(c *gin.Context) {
 }
 
 func (h *Handler) Update(c *gin.Context) {
-	var dto person.CreateDTO
+	var dto person.UpdateDTO
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return
@@ -65,12 +65,14 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	if err = h.personUC.Update(c.Request.Context(), personID, dto); err != nil {
+	res, err := h.personUC.Update(c.Request.Context(), personID, dto)
+
+	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	context.RespondVoid(c, http.StatusOK)
+	context.RespondWithValue(c, http.StatusOK, res)
 }
 
 func (h *Handler) Delete(c *gin.Context) {

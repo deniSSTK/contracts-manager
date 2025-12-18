@@ -10,7 +10,13 @@ type CreateDTO struct {
 	Phone *string           `json:"phone,omitempty" binding:"omitempty,e164"`
 }
 
-// TODO add UpdateDTO
+type UpdateDTO struct {
+	Type  *models.PersonType `json:"type,omitempty"`
+	Name  *string            `json:"name,omitempty"`
+	Code  *string            `json:"code,omitempty"`
+	Email **string           `json:"email,omitempty"`
+	Phone **string           `json:"phone,omitempty"`
+}
 
 type PersonFilter struct {
 	Name  *string

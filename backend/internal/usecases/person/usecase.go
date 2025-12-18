@@ -29,34 +29,26 @@ func (uc *Usecase) GetByID(ctx context.Context, personID uuid.UUID) (*models.Per
 	return uc.personRepo.GetByID(ctx, personID)
 }
 
-func (uc *Usecase) Update(
-	ctx context.Context,
-	personID uuid.UUID,
-	dto person.CreateDTO,
-) error {
-	updateData := make(map[string]interface{})
+func (uc *Usecase) Update(ctx context.Context, personID uuid.UUID, dto person.UpdateDTO) (*models.Person, error) {
+	data := map[string]interface{}{}
 
-	if dto.Type != "" {
-		updateData["type"] = dto.Type
+	if dto.Type != nil {
+		data["type"] = *dto.Type
 	}
-	if dto.Name != "" {
-		updateData["name"] = dto.Name
+	if dto.Name != nil {
+		data["name"] = *dto.Name
 	}
-	if dto.Code != "" {
-		updateData["code"] = dto.Code
+	if dto.Code != nil {
+		data["code"] = *dto.Code
 	}
 	if dto.Email != nil {
-		updateData["email"] = dto.Email
+		data["email"] = *dto.Email
 	}
 	if dto.Phone != nil {
-		updateData["phone"] = dto.Phone
+		data["phone"] = *dto.Phone
 	}
 
-	if len(updateData) == 0 {
-		return nil
-	}
-
-	return uc.personRepo.Update(ctx, personID, updateData)
+	return uc.personRepo.Update(ctx, personID, data)
 }
 
 func (uc *Usecase) Delete(ctx context.Context, personID uuid.UUID) error {
