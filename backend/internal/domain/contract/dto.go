@@ -1,6 +1,11 @@
 package contract
 
-import "time"
+import (
+	"contracts-manager/internal/infrastructure/db/models"
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type CreateDTO struct {
 	Number      string     `json:"number" binding:"required"`
@@ -16,4 +21,10 @@ type UpdateDTO struct {
 	Description **string    `json:"description"`
 	StartDate   **time.Time `json:"startDate"`
 	EndDate     **time.Time `json:"endDate"`
+}
+
+type AddPersonDTO struct {
+	ContractID uuid.UUID
+	PersonID   uuid.UUID
+	Role       models.ContractRole
 }

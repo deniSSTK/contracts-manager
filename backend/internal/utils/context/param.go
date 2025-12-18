@@ -5,8 +5,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func GetUUIDFromParam(c *gin.Context) (uuid.UUID, error) {
-	idStr := c.Param("id")
+func GetUUIDFromParam(c *gin.Context, key string) (uuid.UUID, error) {
+	idStr := c.Param(key)
 	id, err := uuid.Parse(idStr)
 
 	if err != nil {
@@ -18,4 +18,8 @@ func GetUUIDFromParam(c *gin.Context) (uuid.UUID, error) {
 	}
 
 	return id, nil
+}
+
+func GetIdFromParam(c *gin.Context) (uuid.UUID, error) {
+	return GetUUIDFromParam(c, "id")
 }

@@ -37,7 +37,7 @@ func (h *Handler) Create(c *gin.Context) {
 }
 
 func (h *Handler) Get(c *gin.Context) {
-	personID, err := context.GetUUIDFromParam(c)
+	personID, err := context.GetIdFromParam(c)
 	if err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return
@@ -59,7 +59,7 @@ func (h *Handler) Update(c *gin.Context) {
 		return
 	}
 
-	personID, err := context.GetUUIDFromParam(c)
+	personID, err := context.GetIdFromParam(c)
 	if err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return
@@ -76,7 +76,7 @@ func (h *Handler) Update(c *gin.Context) {
 }
 
 func (h *Handler) Delete(c *gin.Context) {
-	personID, err := context.GetUUIDFromParam(c)
+	personID, err := context.GetIdFromParam(c)
 	if err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return

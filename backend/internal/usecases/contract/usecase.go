@@ -50,16 +50,26 @@ func (uc *Usecase) Update(
 	return uc.contractRepo.Update(ctx, id, data)
 }
 
-func (uc *Usecase) GetByID(
-	ctx context.Context,
-	id uuid.UUID,
-) (*models.Contract, error) {
+func (uc *Usecase) GetByID(ctx context.Context, id uuid.UUID) (*models.Contract, error) {
 	return uc.contractRepo.GetByID(ctx, id)
 }
 
-func (uc *Usecase) Delete(
-	ctx context.Context,
-	id uuid.UUID,
-) error {
+func (uc *Usecase) Delete(ctx context.Context, id uuid.UUID) error {
 	return uc.contractRepo.Delete(ctx, id)
+}
+
+func (uc *Usecase) AddPerson(ctx context.Context, dto contract.AddPersonDTO) (*models.ContractPerson, error) {
+	return uc.contractRepo.AddPerson(ctx, dto)
+}
+
+func (uc *Usecase) RemovePerson(ctx context.Context, contractID, personID uuid.UUID) error {
+	return uc.contractRepo.RemovePerson(ctx, contractID, personID)
+}
+
+func (uc *Usecase) GetPersons(ctx context.Context, contractID uuid.UUID) ([]models.Person, error) {
+	return uc.contractRepo.GetPersons(ctx, contractID)
+}
+
+func (uc *Usecase) GetContractsByPerson(ctx context.Context, personID uuid.UUID) ([]models.Contract, error) {
+	return uc.contractRepo.GetContractsByPerson(ctx, personID)
 }
