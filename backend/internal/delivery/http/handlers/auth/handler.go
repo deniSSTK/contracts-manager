@@ -74,6 +74,11 @@ func (h *Handler) Signup(c *gin.Context) {
 	h.tokenGeneration(c, userID)
 }
 
+func (h *Handler) Logout(c *gin.Context) {
+	cookie.ClearCookie(c, cookie.RefreshToken)
+	context.RespondVoid(c, http.StatusOK)
+}
+
 func (h *Handler) RefreshAccessToken(c *gin.Context) {
 	refreshToken, err := cookie.GetCookie(c, cookie.RefreshToken)
 	if err != nil {
