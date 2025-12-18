@@ -1,6 +1,7 @@
 package contracthandler
 
 import (
+	filehandler "contracts-manager/internal/delivery/http/file"
 	"contracts-manager/internal/domain/contract"
 	contractusecase "contracts-manager/internal/usecases/contract"
 	"contracts-manager/internal/utils/context"
@@ -153,4 +154,12 @@ func (h *Handler) GetContractsByPerson(c *gin.Context) {
 	}
 
 	context.RespondWithValue(c, http.StatusOK, contracts)
+}
+
+func (h *Handler) Import(c *gin.Context) {
+	filehandler.Import(c, h.contractUC)
+}
+
+func (h *Handler) Export(c *gin.Context) {
+	filehandler.Export(c, h.contractUC)
 }
