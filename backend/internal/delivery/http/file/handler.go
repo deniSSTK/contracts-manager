@@ -64,7 +64,7 @@ func Export(
 	switch format {
 	case "csv":
 		c.Header("Content-Type", "text/csv")
-		c.Header("Content-Disposition", `attachment; filename="persons.csv"`)
+		c.Header("Content-Disposition", `attachment; filename="export.csv"`)
 
 		err := usecase.ExportCSV(ctx, c.Writer)
 		if err != nil {
@@ -73,7 +73,7 @@ func Export(
 
 	case "json":
 		c.Header("Content-Type", "application/json")
-		c.Header("Content-Disposition", `attachment; filename="persons.json"`)
+		c.Header("Content-Disposition", `attachment; filename="export.json"`)
 
 		err := usecase.ExportJSON(ctx, c.Writer)
 		if err != nil {
