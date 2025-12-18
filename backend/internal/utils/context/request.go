@@ -9,7 +9,7 @@ import (
 type ContextValue string
 
 const (
-	AuthUser ContextValue = "AuthUser"
+	AuthUser ContextValue = "auth_user"
 )
 
 func SetContextValue(c *gin.Context, key ContextValue, value any) {
