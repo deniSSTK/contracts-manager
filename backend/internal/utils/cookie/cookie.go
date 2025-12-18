@@ -4,6 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type CookieNames string
+
+const (
+	RefreshToken CookieNames = "refresh_token"
+)
+
 func SetCookie(c *gin.Context, name CookieNames, value string, age int) {
 	c.SetCookie(
 		string(name),
