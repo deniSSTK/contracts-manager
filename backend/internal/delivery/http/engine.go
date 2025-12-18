@@ -16,7 +16,7 @@ func NewEngine(cfg *config.Config) *gin.Engine {
 	engine.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{cfg.FrontendUrl},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
-		AllowHeaders:     []string{"Content-Type"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,

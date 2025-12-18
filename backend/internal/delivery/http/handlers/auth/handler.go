@@ -18,9 +18,13 @@ type Handler struct {
 	authUC      *authusecase.Usecase
 }
 
-func NewHandler(authUC *authusecase.Usecase) *Handler {
+func NewHandler(
+	authUC *authusecase.Usecase,
+	jwtProvider *token.JWTProvider,
+) *Handler {
 	return &Handler{
-		authUC: authUC,
+		authUC:      authUC,
+		jwtProvider: jwtProvider,
 	}
 }
 

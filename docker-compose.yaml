@@ -5,24 +5,25 @@ services:
       dockerfile: Dockerfile
     container_name: contracts-backend
     ports:
-      - "8000:8080"
+      - "8000:8000"
     environment:
       PORT: 8000
       RUN_MODE: ${RUN_MODE}
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:5173
       JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ./backend:/app
       - ./backend/db:/app/db
-    command: go run main.go
 
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#    container_name: frontend
-#    ports:
-#      - "3000:3000"
-#    environment:
-#      - PORT=3000
-#      - BACKEND_URL=http://localhost:8080
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: contracts-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules

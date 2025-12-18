@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@model/*": ["models/*"],
+      "@store/*": ["stores/*"],
+      "@usecase/*": ["usecases/*"],
+      "@component/*": ["components/*"],
+      "@view/*": ["views/*"],
+      "@repository/*": ["infrastructure/api/repositories/*"],
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue"]
+}
