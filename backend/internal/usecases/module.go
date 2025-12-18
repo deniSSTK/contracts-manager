@@ -2,6 +2,7 @@ package usecases
 
 import (
 	authusecase "contracts-manager/internal/usecases/auth"
+	contractusecase "contracts-manager/internal/usecases/contract"
 	personusecase "contracts-manager/internal/usecases/person"
 	userusecase "contracts-manager/internal/usecases/user"
 
@@ -13,5 +14,6 @@ var Module = fx.Options(
 		authusecase.NewUsecase,
 		userusecase.NewUsecase,
 		personusecase.NewUsecase,
+		contractusecase.NewUsecase,
 	),
 )

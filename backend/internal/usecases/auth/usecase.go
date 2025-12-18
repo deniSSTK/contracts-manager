@@ -14,12 +14,13 @@ type Usecase struct {
 }
 
 func NewUsecase(userRepo *repositories.UserRepository) *Usecase {
-	return &Usecase{
-		userRepo: userRepo,
-	}
+	return &Usecase{userRepo}
 }
 
-func (uc *Usecase) GetAuthUser(ctx context.Context, id uuid.UUID) (*auth.AuthUser, error) {
+func (uc *Usecase) GetAuthUser(
+	ctx context.Context,
+	id uuid.UUID,
+) (*auth.AuthUser, error) {
 	user, err := uc.userRepo.GetUserByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -28,7 +29,10 @@ func (uc *Usecase) GetAuthUser(ctx context.Context, id uuid.UUID) (*auth.AuthUse
 	return auth.ParseAuthUserFromUserModel(user), nil
 }
 
-func (uc *Usecase) Login(ctx context.Context, dto auth.LoginDTO) (uuid.UUID, error) {
+func (uc *Usecase) Login(
+	ctx context.Context,
+	dto auth.LoginDTO,
+) (uuid.UUID, error) {
 	passwordHash, err := uc.userRepo.GetPasswordHashByUsernameOrEmail(ctx, dto.UsernameOrEmail)
 	if err != nil {
 		return uuid.Nil, err
@@ -41,7 +45,10 @@ func (uc *Usecase) Login(ctx context.Context, dto auth.LoginDTO) (uuid.UUID, err
 	return uc.userRepo.GetUserIDByUsernameOrEmail(ctx, dto.UsernameOrEmail)
 }
 
-func (uc *Usecase) Signup(ctx context.Context, dto auth.SignupDTO) (uuid.UUID, error) {
+func (uc *Usecase) Signup(
+	ctx context.Context,
+	dto auth.SignupDTO,
+) (uuid.UUID, error) {
 	emailExists, err := uc.userRepo.CheckEmailExists(ctx, dto.Email)
 	if err != nil {
 		return uuid.Nil, err
@@ -56,5 +63,5 @@ func (uc *Usecase) Signup(ctx context.Context, dto auth.SignupDTO) (uuid.UUID, e
 		return uuid.Nil, err
 	}
 
-	return uc.userRepo.Insert(ctx, dto, passwordHash)
+	return uc.userRepo.Create(ctx, dto, passwordHash)
 }

@@ -9,7 +9,5 @@ type Usecase struct {
 }
 
 func NewUsecase(userRepo *repositories.UserRepository) *Usecase {
-	return &Usecase{
-		userRepo: userRepo,
-	}
+	return &Usecase{userRepo}
 }

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	authhandler "contracts-manager/internal/delivery/http/handlers/auth"
+	contracthandler "contracts-manager/internal/delivery/http/handlers/contract"
 	personhandler "contracts-manager/internal/delivery/http/handlers/person"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,9 @@ var Module = fx.Options(
 
 		personhandler.NewHandler,
 		personhandler.NewRoutes,
+
+		contracthandler.NewHandler,
+		contracthandler.NewRoutes,
 	),
 
 	fx.Invoke(registerRoutes),
@@ -24,7 +28,9 @@ func registerRoutes(
 	routes *gin.RouterGroup,
 	authRoutes *authhandler.Routes,
 	personRoutes *personhandler.Routes,
+	contractRoutes *contracthandler.Routes,
 ) {
 	authRoutes.RegisterRoutes(routes)
 	personRoutes.RegisterRoutes(routes)
+	contractRoutes.RegisterRoutes(routes)
 }

@@ -20,14 +20,14 @@ func NewHandler(personUC *personusecase.Usecase) *Handler {
 	}
 }
 
-func (h *Handler) Insert(c *gin.Context) {
-	var dto person.InsertDTO
+func (h *Handler) Create(c *gin.Context) {
+	var dto person.CreateDTO
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	personID, err := h.personUC.Insert(c.Request.Context(), dto)
+	personID, err := h.personUC.Create(c.Request.Context(), dto)
 	if err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
@@ -36,7 +36,7 @@ func (h *Handler) Insert(c *gin.Context) {
 	context.RespondWithValue(c, http.StatusCreated, gin.H{"personID": personID})
 }
 
-func (h *Handler) GetByID(c *gin.Context) {
+func (h *Handler) Get(c *gin.Context) {
 	personID, err := context.GetUUIDFromParam(c)
 	if err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
@@ -53,7 +53,7 @@ func (h *Handler) GetByID(c *gin.Context) {
 }
 
 func (h *Handler) Update(c *gin.Context) {
-	var dto person.InsertDTO
+	var dto person.CreateDTO
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return

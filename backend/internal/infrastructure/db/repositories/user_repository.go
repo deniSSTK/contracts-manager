@@ -13,12 +13,14 @@ type UserRepository struct {
 }
 
 func NewUserRepository(baseRepository BaseRepository) *UserRepository {
-	return &UserRepository{
-		BaseRepository: baseRepository,
-	}
+	return &UserRepository{baseRepository}
 }
 
-func (r *UserRepository) Insert(ctx context.Context, dto auth.SignupDTO, passwordHash string) (uuid.UUID, error) {
+func (r *UserRepository) Create(
+	ctx context.Context,
+	dto auth.SignupDTO,
+	passwordHash string,
+) (uuid.UUID, error) {
 	newUser := models.User{
 		Username:     dto.Username,
 		Email:        dto.Email,
@@ -33,7 +35,10 @@ func (r *UserRepository) Insert(ctx context.Context, dto auth.SignupDTO, passwor
 	return newUser.ID, nil
 }
 
-func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
+func (r *UserRepository) GetUserByID(
+	ctx context.Context,
+	id uuid.UUID,
+) (*models.User, error) {
 	var user models.User
 	if err := r.db.WithContext(ctx).First(&user, "id = ?", id).Error; err != nil {
 		return nil, err
@@ -58,7 +63,10 @@ func (r *UserRepository) GetPasswordHashByUsernameOrEmail(ctx context.Context, u
 	return passwordHash, nil
 }
 
-func (r *UserRepository) GetUserIDByUsernameOrEmail(ctx context.Context, usernameOrEmail string) (uuid.UUID, error) {
+func (r *UserRepository) GetUserIDByUsernameOrEmail(
+	ctx context.Context,
+	usernameOrEmail string,
+) (uuid.UUID, error) {
 	var user models.User
 
 	err := r.db.WithContext(ctx).
@@ -72,7 +80,10 @@ func (r *UserRepository) GetUserIDByUsernameOrEmail(ctx context.Context, usernam
 	return user.ID, nil
 }
 
-func (r *UserRepository) CheckEmailExists(ctx context.Context, email string) (bool, error) {
+func (r *UserRepository) CheckEmailExists(
+	ctx context.Context,
+	email string,
+) (bool, error) {
 	var count int64
 	if err := r.db.WithContext(ctx).
 		Model(&models.User{}).

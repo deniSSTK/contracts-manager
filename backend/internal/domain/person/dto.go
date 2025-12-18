@@ -2,13 +2,15 @@ package person
 
 import "contracts-manager/internal/infrastructure/db/models"
 
-type InsertDTO struct {
+type CreateDTO struct {
 	Type  models.PersonType `json:"type" binding:"required,oneof=individual entity"`
 	Name  string            `json:"name" binding:"required,min=2,max=255"`
 	Code  string            `json:"code" binding:"required,min=3,max=50"`
 	Email *string           `json:"email,omitempty" binding:"omitempty,email"`
 	Phone *string           `json:"phone,omitempty" binding:"omitempty,e164"`
 }
+
+// TODO add UpdateDTO
 
 type PersonFilter struct {
 	Name  *string

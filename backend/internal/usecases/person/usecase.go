@@ -18,20 +18,22 @@ type Usecase struct {
 }
 
 func NewUsecase(personRepo *repositories.PersonRepository) *Usecase {
-	return &Usecase{
-		personRepo: personRepo,
-	}
+	return &Usecase{personRepo}
 }
 
-func (uc *Usecase) Insert(ctx context.Context, dto person.InsertDTO) (uuid.UUID, error) {
-	return uc.personRepo.Insert(ctx, dto)
+func (uc *Usecase) Create(ctx context.Context, dto person.CreateDTO) (uuid.UUID, error) {
+	return uc.personRepo.Create(ctx, dto)
 }
 
 func (uc *Usecase) GetByID(ctx context.Context, personID uuid.UUID) (*models.Person, error) {
 	return uc.personRepo.GetByID(ctx, personID)
 }
 
-func (uc *Usecase) Update(ctx context.Context, personID uuid.UUID, dto person.InsertDTO) error {
+func (uc *Usecase) Update(
+	ctx context.Context,
+	personID uuid.UUID,
+	dto person.CreateDTO,
+) error {
 	updateData := make(map[string]interface{})
 
 	if dto.Type != "" {
@@ -65,7 +67,10 @@ func (uc *Usecase) List(ctx context.Context, filter person.PersonFilter) (*perso
 	return uc.personRepo.List(ctx, filter)
 }
 
-func (uc *Usecase) ImportJSON(ctx context.Context, reader io.Reader) (int, []string) {
+func (uc *Usecase) ImportJSON(
+	ctx context.Context,
+	reader io.Reader,
+) (int, []string) {
 	decoder := json.NewDecoder(reader)
 	var imported int
 	var errors []string
@@ -77,14 +82,14 @@ func (uc *Usecase) ImportJSON(ctx context.Context, reader io.Reader) (int, []str
 
 	i := 0
 	for decoder.More() {
-		var dto person.InsertDTO
+		var dto person.CreateDTO
 		if err = decoder.Decode(&dto); err != nil {
 			errors = append(errors, "row "+strconv.Itoa(i)+": "+err.Error())
 			i++
 			continue
 		}
 
-		_, err = uc.personRepo.Insert(ctx, dto)
+		_, err = uc.personRepo.Create(ctx, dto)
 		if err != nil {
 			errors = append(errors, "row "+strconv.Itoa(i)+": "+err.Error())
 		} else {
@@ -96,7 +101,10 @@ func (uc *Usecase) ImportJSON(ctx context.Context, reader io.Reader) (int, []str
 	return imported, errors
 }
 
-func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []string) {
+func (uc *Usecase) ImportCSV(
+	ctx context.Context,
+	reader io.Reader,
+) (int, []string) {
 	r := csv.NewReader(reader)
 	imported := 0
 	var errors []string
@@ -118,7 +126,7 @@ func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []stri
 			continue
 		}
 
-		dto := person.InsertDTO{}
+		dto := person.CreateDTO{}
 		for i, h := range headers {
 			switch h {
 			case "type":
@@ -138,7 +146,7 @@ func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []stri
 			}
 		}
 
-		_, err = uc.personRepo.Insert(ctx, dto)
+		_, err = uc.personRepo.Create(ctx, dto)
 		if err != nil {
 			errors = append(errors, "row "+strconv.Itoa(rowIndex)+": "+err.Error())
 		} else {

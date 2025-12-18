@@ -11,5 +11,6 @@ var Module = fx.Options(
 		repositories.NewBaseRepository,
 		repositories.NewUserRepository,
 		repositories.NewPersonRepository,
+		repositories.NewContractRepository,
 	),
 )
