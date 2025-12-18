@@ -29,7 +29,11 @@ func (uc *Usecase) GetByID(ctx context.Context, personID uuid.UUID) (*models.Per
 	return uc.personRepo.GetByID(ctx, personID)
 }
 
-func (uc *Usecase) Update(ctx context.Context, personID uuid.UUID, dto person.UpdateDTO) (*models.Person, error) {
+func (uc *Usecase) Update(
+	ctx context.Context,
+	personID uuid.UUID,
+	dto person.UpdateDTO,
+) (*models.Person, error) {
 	data := map[string]interface{}{}
 
 	if dto.Type != nil {
