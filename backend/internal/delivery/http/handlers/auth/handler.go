@@ -55,7 +55,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	userID, err := h.authUC.Login(c.Request.Context(), dto)
 	if err != nil {
-		context.RespondError(c, http.StatusUnauthorized, err)
+		context.RespondError(c, http.StatusInternalServerError, err)
 		return
 	}
 

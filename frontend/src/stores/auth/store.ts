@@ -12,6 +12,7 @@ const useAuthStore = defineStore('auth', {
     state: () => ({
         accessToken: null as string | null,
         authUser: null as AuthUser | null,
+        loaded: false
     }),
 
     getters: {
@@ -25,7 +26,7 @@ const useAuthStore = defineStore('auth', {
 
         async setAccessTokenRequest(): Promise<void> {
             const data = await authUsecase.refreshAccessToken()
-            this.accessToken = data.accessToken
+            this.setAccessToken(data.accessToken)
         },
 
         async setAuthUserRequest(): Promise<void> {
@@ -33,8 +34,21 @@ const useAuthStore = defineStore('auth', {
         },
 
         async loadAll(): Promise<void> {
-            await this.setAccessTokenRequest()
-            await this.setAuthUserRequest()
+            try {
+                await this.setAccessTokenRequest()
+                await this.setAuthUserRequest()
+            } finally {
+                this.loaded = true
+            }
+        },
+
+        async setAllWithToken(token: string): Promise<void> {
+            try {
+                this.setAccessToken(token)
+                await this.setAuthUserRequest()
+            } finally {
+                this.loaded = true
+            }
         },
 
         logout(): void {

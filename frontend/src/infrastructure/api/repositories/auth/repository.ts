@@ -7,6 +7,11 @@ export interface ISignupDTO {
     password: string;
 }
 
+export interface ILoginDTO {
+    usernameOrEmail: string;
+    password: string;
+}
+
 export interface IAccessTokenResponse {
     accessToken: string;
 }
@@ -20,6 +25,10 @@ export class AuthRepository {
 
     async signup(dto: ISignupDTO): Promise<IAccessTokenResponse> {
         return this.api.post("/auth/signup", dto, { auth: false })
+    }
+
+    async login(dto: ILoginDTO): Promise<IAccessTokenResponse> {
+        return this.api.post("/auth/login", dto, { auth: false })
     }
 
     async getAuthUser(): Promise<AuthUser> {
