@@ -11,9 +11,13 @@ type Routes struct {
 	authMiddleware *middleware.AuthMiddleware
 }
 
-func NewRoutes(handler *Handler) *Routes {
+func NewRoutes(
+	handler *Handler,
+	authMiddleware *middleware.AuthMiddleware,
+) *Routes {
 	return &Routes{
-		handler: handler,
+		handler,
+		authMiddleware,
 	}
 }
 

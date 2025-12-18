@@ -73,3 +73,30 @@ func (h *Handler) Signup(c *gin.Context) {
 
 	h.tokenGeneration(c, userID)
 }
+
+func (h *Handler) RefreshAccessToken(c *gin.Context) {
+	refreshToken, err := cookie.GetCookie(c, cookie.RefreshToken)
+	if err != nil {
+		context.RespondError(c, http.StatusUnauthorized, err)
+		return
+	}
+
+	accessToken, err := h.jwtProvider.RefreshAccessToken(refreshToken)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusCreated, gin.H{"accessToken": accessToken})
+	return
+}
+
+func (h *Handler) GetAuthUser(c *gin.Context) {
+	authUser, err := context.GetAuthUser(c)
+	if err != nil {
+		context.RespondError(c, http.StatusUnauthorized, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusOK, authUser)
+}
