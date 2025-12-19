@@ -13,7 +13,7 @@
 
         <div class="form-group">
             <label for="name">Name</label>
-            <input
+            <Input
                 id="name"
                 type="text"
                 v-model="dto.name"
@@ -25,7 +25,7 @@
 
         <div class="form-group">
             <label for="code">Code</label>
-            <input
+            <Input
                 id="code"
                 type="text"
                 v-model="dto.code"
@@ -37,7 +37,7 @@
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input
+            <Input
                 id="email"
                 type="email"
                 v-model="dto.email"
@@ -47,7 +47,7 @@
 
         <div class="form-group">
             <label for="phone">Phone</label>
-            <input
+            <Input
                 id="phone"
                 type="tel"
                 v-model="dto.phone"
@@ -55,19 +55,20 @@
             />
         </div>
 
-        <button type="submit">Submit</button>
+        <Button type="submit">Submit</Button>
     </form>
 </template>
 
 <script lang="ts" setup>
 import { reactive } from "vue";
-import { importName } from "@utils/utils";
 import { useRoute } from "vue-router";
 import {CreatePersonDTO} from "@repository/person/repository";
 import personUsecase from "@usecase/person/usecase";
+import Button from "@component/ui/button/Button.vue";
+import Input from "@component/ui/input/Input.vue";
 
 const route = useRoute();
-const name = importName(route);
+const name = route.params.entity;
 
 const dto = reactive<CreatePersonDTO>({
     type: "",
@@ -84,7 +85,9 @@ async function handleSubmit() {
 
 <style scoped>
 .form-container {
+    width: 100%;
     max-width: 400px;
+
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -98,19 +101,5 @@ async function handleSubmit() {
 label {
     font-weight: 500;
     margin-bottom: 4px;
-}
-
-input, select, button {
-    padding: 8px;
-    font-size: 14px;
-}
-
-button {
-    cursor: pointer;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-top: 12px;
 }
 </style>

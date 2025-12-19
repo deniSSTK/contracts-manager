@@ -17,7 +17,6 @@
       "@component/*": ["components/*"],
       "@view/*": ["views/*"],
       "@repository/*": ["infrastructure/api/repositories/*"],
-      "@utils/*": ["utils/*"],
     }
   },
   "include": ["src/**/*.ts", "src/**/*.vue"]

@@ -1,31 +1,52 @@
 <template>
     <div class="table-container">
+
         <div class="filters">
-            <Input v-model="filters.name" placeholder="Name" />
-            <Input v-model="filters.type" placeholder="Type" />
-            <Input v-model="filters.code" placeholder="Code" />
+            <Input
+                v-for="f in entity.filters"
+                :key="f.key"
+                v-model="filters[f.key]"
+                :placeholder="f.placeholder"
+            />
             <Button @click="applyFilters">Apply</Button>
+            <Button @click="resetFilters">Reset</Button>
         </div>
 
         <table>
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Code</th>
+                <th v-for="c in entity.columns" :key="c.key">
+                    {{c.actions ? 'Action' : c.label  }}
+                </th>
             </tr>
             </thead>
+
             <tbody>
-            <tr v-for="person in data" :key="person.id">
-                <td>{{ person.name }}</td>
-                <td>{{ person.type }}</td>
-                <td>{{ person.code }}</td>
+            <tr v-for="row in data" :key="row.id">
+                <td v-for="c in entity.columns" :key="c.key">
+                    <div v-if="c.actions" class="actions">
+                        <Button
+                            v-for="(a, i) in c.actions"
+                            :key="i"
+                            size="sm"
+                            @click="a.callback(row)"
+                        >
+                            {{ a.label }}
+                        </Button>
+                    </div>
+
+                    <span v-else>
+                        {{ row[c.key] }}
+                    </span>
+                </td>
             </tr>
             </tbody>
         </table>
 
         <div class="pagination">
-            <Button :disabled="page === 1" @click="goToPage(page - 1)">Prev</Button>
+            <Button :disabled="page === 1" @click="goToPage(page - 1)">
+                Prev
+            </Button>
 
             <Button
                 v-for="p in totalPages"
@@ -36,47 +57,63 @@
                 {{ p }}
             </Button>
 
-            <Button :disabled="page === totalPages || totalPages === 0" @click="goToPage(page + 1)">Next</Button>
+            <Button
+                :disabled="page === totalPages || totalPages === 0"
+                @click="goToPage(page + 1)"
+            >
+                Next
+            </Button>
         </div>
+
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from "vue";
-import personUsecase from "@usecase/person/usecase";
+import { ref, reactive, computed, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
+
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 
-import "./admin-panel-table.css"
+import { entityRegistry } from "../../../entities";
 
-interface Person {
-    id: number;
-    name: string;
-    type: string;
-    code: string;
-}
+import "./admin-panel-table.css";
 
-const data = ref<Person[]>([]);
+const route = useRoute();
+
+const entity = computed(() => {
+    const key = route.params.entity;
+    const e = entityRegistry[key as keyof typeof entityRegistry];
+
+    if (!e) {
+        throw new Error(`Unknown entity: ${key}`);
+    }
+
+    return e;
+});
+
+const data = ref<any[]>([]);
 const page = ref(1);
 const limit = 20;
 const totalPages = ref(1);
 
-const filters = reactive({
-    name: "",
-    type: "",
-    code: ""
+const filters = reactive<Record<string, string>>({});
+
+entity.value.filters.forEach(f => {
+    filters[f.key] = "";
 });
 
 async function fetchData() {
     const params = new URLSearchParams({
         page: page.value.toString(),
         limit: limit.toString(),
-        ...(filters.name && { name: filters.name }),
-        ...(filters.type && { type: filters.type }),
-        ...(filters.code && { code: filters.code })
+        ...Object.fromEntries(
+            Object.entries(filters).filter(([_, v]) => v)
+        )
     });
 
-    const result = await personUsecase.list(params)
+    //@ts-ignore
+    const result = await entity.value.usecase.list(params);
 
     data.value = result.data;
     totalPages.value = Math.ceil(result.total / result.limit);
@@ -93,7 +130,21 @@ function applyFilters() {
     fetchData();
 }
 
-onMounted(() => {
+function resetFilters() {
+    Object.keys(filters).forEach(key => {
+        filters[key] = "";
+    });
+    
     fetchData();
-});
+}
+
+watch(
+    () => route.name,
+    () => {
+        page.value = 1;
+        fetchData();
+    }
+);
+
+onMounted(fetchData);
 </script>

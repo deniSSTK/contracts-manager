@@ -1,7 +1,7 @@
 <template>
     <main class="page">
         <header>
-            <h1>Admin Panel{{buildName()}}</h1>
+            <h1>Admin Panel <span v-if="route.name != RouteName.ADMIN_PANEL">{{route.params.entity}}</span> </h1>
             <router-link :to="{ name: RouteName.DASHBOARD }">
                 <Button>To Dashboard</Button>
             </router-link>
@@ -15,20 +15,20 @@
                 <Button>Reset</Button>
             </router-link>
             <router-link
-                :to="{ name: RouteName.ADMIN_PANEL_CONTRACTS }"
-                v-if="$route.name != RouteName.ADMIN_PANEL_CONTRACTS"
+                :to="{ name: RouteName.ADMIN_PANEL_TABLE, params: { entity: 'contract' } }"
+                v-if="$route.params.entity !== 'contract'"
             >
                 <Button>Contracts</Button>
             </router-link>
             <router-link
-                :to="{ name: RouteName.ADMIN_PANEL_USERS }"
-                v-if="$route.name != RouteName.ADMIN_PANEL_USERS"
+                :to="{ name: RouteName.ADMIN_PANEL_TABLE, params: { entity: 'user' } }"
+                v-if="$route.params.entity !== 'user'"
             >
                 <Button>Users</Button>
             </router-link>
             <router-link
-                :to="{ name: RouteName.ADMIN_PANEL_PERSONS }"
-                v-if="$route.name != RouteName.ADMIN_PANEL_PERSONS"
+                :to="{ name: RouteName.ADMIN_PANEL_TABLE, params: { entity: 'person' } }"
+                v-if="$route.params.entity !== 'person'"
             >
                 <Button>Persons</Button>
             </router-link>
@@ -43,14 +43,6 @@ import {RouteName} from "../../app/routes";
 import {useRoute} from "vue-router";
 
 const route = useRoute()
-
-function buildName(): string {
-    if (route.name !== RouteName.ADMIN_PANEL) {
-        const list = route.name.split("-")
-
-        return ": " + list[list.length - 1]
-    }
-}
 </script>
 
 <style>

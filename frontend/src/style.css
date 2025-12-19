@@ -62,8 +62,9 @@ header {
 }
 
 .page {
-    width: 100vw;
-    height: 100dvh;
+    width: 100%;
+    min-height: 100dvh;
+    height: max-content;
 
     display: flex;
     flex-direction: column;

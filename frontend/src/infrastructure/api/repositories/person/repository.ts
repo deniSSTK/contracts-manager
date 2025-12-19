@@ -3,7 +3,7 @@ import {ListResult} from "../../dto";
 import Person from "@model/person/model";
 
 export interface CreatePersonDTO {
-    type: "individual" | "entity";
+    type: "individual" | "entity" | "";
     name: string;
     code: string;
     email?: string | null;

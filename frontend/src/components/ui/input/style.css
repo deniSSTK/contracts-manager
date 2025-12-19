@@ -12,6 +12,5 @@
 
     &:focus {
         border-color: var(--color-primary);
-        border-width: 2px;
     }
 }

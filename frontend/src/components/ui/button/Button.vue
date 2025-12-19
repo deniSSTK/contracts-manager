@@ -7,7 +7,7 @@
     </button>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import "./style.css"
 
 defineOptions({

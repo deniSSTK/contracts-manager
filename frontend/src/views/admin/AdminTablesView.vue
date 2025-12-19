@@ -3,7 +3,7 @@
         <Button>Cancel</Button>
     </router-link>
 
-    <router-link :to="{ query: { new: true } }" v-else>
+    <router-link :to="{ query: { new: 'true' } }" v-else>
         <Button>Create new {{name}}</Button>
     </router-link>
 
@@ -14,14 +14,13 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue"
 import {useRoute} from "vue-router";
-import Button from "@component/ui/button/Button.vue";
 import AdminPanelTable from "@component/admin/panelTable/AdminPanelTable.vue";
 import AdminCreateNewEntity from "@view/admin/AdminCreateNewEntity.vue";
-import {importName} from "@utils/utils";
+import Button from "@component/ui/button/Button.vue";
 
 const route = useRoute()
 
-const name = importName(route)
+const name = route.params.entity
 const isNew = ref<boolean>(!!route.query.new)
 
 watch(

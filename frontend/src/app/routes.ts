@@ -8,9 +8,8 @@ export enum RouteName {
     DASHBOARD = 'dashboard',
 
     ADMIN_PANEL = 'admin-panel',
-    ADMIN_PANEL_CONTRACTS = 'admin-panel-contracts',
-    ADMIN_PANEL_USERS = 'admin-panel-users',
-    ADMIN_PANEL_PERSONS = 'admin-panel-persons',
+    ADMIN_PANEL_TABLE = 'admin-panel-table',
+    ADMIN_PANEL_INFO = 'admin-panel-info',
 }
 
 const AuthPages: RouteName[] = [RouteName.LOGIN, RouteName.SIGNUP]
@@ -40,20 +39,20 @@ const routes: RouteRecordRaw[] = [
         },
         children: [
             {
-                path: 'contracts',
-                name: RouteName.ADMIN_PANEL_CONTRACTS,
-                component: () => import("@view/admin/AdminTablesView.vue"),
+                path: ':entity',
+                children: [
+                    {
+                        path: '',
+                        name: RouteName.ADMIN_PANEL_TABLE,
+                        component: () => import("@view/admin/AdminTablesView.vue"),
+                    },
+                    {
+                        path: 'info/:entityId',
+                        name: RouteName.ADMIN_PANEL_INFO,
+                        component: () => import("@view/admin/AdminPanelInfoVIew.vue")
+                    }
+                ]
             },
-            {
-                path: 'users',
-                name: RouteName.ADMIN_PANEL_USERS,
-                component: () => import("@view/admin/AdminTablesView.vue"),
-            },
-            {
-                path: 'persons',
-                name: RouteName.ADMIN_PANEL_PERSONS,
-                component: () => import("@view/admin/AdminTablesView.vue"),
-            }
         ]
     },
     {
