@@ -39,7 +39,7 @@ func (p *JWTProvider) generateToken(userID uuid.UUID, duration time.Duration, to
 }
 
 func (p *JWTProvider) GenerateAccessToken(userID uuid.UUID) (auth.AuthResponse, error) {
-	token, exp, err := p.generateToken(userID, 1*time.Minute, "refresh")
+	token, exp, err := p.generateToken(userID, 15*time.Minute, "refresh")
 	if err != nil {
 		return auth.AuthResponse{}, err
 	}

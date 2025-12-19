@@ -33,7 +33,7 @@ export class AuthUsecase {
     }
 
     async getAuthUser(): Promise<AuthUser> {
-        return this.authRepository.getAuthUser();
+        return await this.authRepository.getAuthUser();
     }
 }
 

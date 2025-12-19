@@ -20,6 +20,7 @@ export default defineConfig({
             '@component': path.resolve(__dirname, 'src/components'),
             '@view': path.resolve(__dirname, 'src/views'),
             '@repository': path.resolve(__dirname, 'src/infrastructure/api/repositories'),
+            '@utils': path.resolve(__dirname, 'src/utils'),
         }
     }
 })

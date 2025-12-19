@@ -7,7 +7,10 @@ export interface AuthUser {
     type: UserType;
 }
 
-export type UserType = 'regular' | 'admin'
+export enum UserType {
+    REGULAR = 'regular',
+    ADMIN = 'admin'
+}
 
 const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -23,6 +26,8 @@ const useAuthStore = defineStore('auth', {
             const now = Math.floor(Date.now() / 1000)
             return state.exp > now
         },
+
+        isAdmin: (state) => (state.authUser as AuthUser).type === UserType.ADMIN
     },
 
     actions: {

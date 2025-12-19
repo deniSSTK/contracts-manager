@@ -28,7 +28,7 @@
                 />
             </div>
             <Button type="submit" :disabled="!canSendReq">Log In</Button>
-            <router-link :to="{ name: RouteName.SIGNUP }">Don't have an account? <span class="primary">Signup</span></router-link>
+            <router-link :to="{ name: RouteName.SIGNUP }">Don't have an account? <span class="primary">Register</span></router-link>
         </form>
     </main>
 </template>

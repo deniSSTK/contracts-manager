@@ -1,14 +1,16 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import SignupView from "@view/auth/SignupView.vue";
 import useAuthStore from "@store/auth/store";
-import DashboardView from "@view/dashboard/DashboardView.vue";
-import LoginView from "@view/auth/LoginView.vue";
 
 export enum RouteName {
     LOGIN = "login",
     SIGNUP = "signup",
 
-    DASHBOARD = 'dashboard'
+    DASHBOARD = 'dashboard',
+
+    ADMIN_PANEL = 'admin-panel',
+    ADMIN_PANEL_CONTRACTS = 'admin-panel-contracts',
+    ADMIN_PANEL_USERS = 'admin-panel-users',
+    ADMIN_PANEL_PERSONS = 'admin-panel-persons',
 }
 
 const AuthPages: RouteName[] = [RouteName.LOGIN, RouteName.SIGNUP]
@@ -17,20 +19,42 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: RouteName.DASHBOARD,
-        component: DashboardView,
-        meta: {
-            requiresAuth: true,
-        }
+        component: () => import("@view/dashboard/DashboardView.vue"),
     },
     {
         path: '/signup',
         name: RouteName.SIGNUP,
-        component: SignupView
+        component: () => import("@view/auth/SignupView.vue"),
     },
     {
         path: '/login',
         name: RouteName.LOGIN,
-        component: LoginView
+        component: () => import("@view/auth/LoginView.vue"),
+    },
+    {
+        path: '/admin',
+        name: RouteName.ADMIN_PANEL,
+        component: () => import("@view/admin/AdminPanelView.vue"),
+        meta: {
+            adminOnly: true,
+        },
+        children: [
+            {
+                path: 'contracts',
+                name: RouteName.ADMIN_PANEL_CONTRACTS,
+                component: () => import("@view/admin/AdminTablesView.vue"),
+            },
+            {
+                path: 'users',
+                name: RouteName.ADMIN_PANEL_USERS,
+                component: () => import("@view/admin/AdminTablesView.vue"),
+            },
+            {
+                path: 'persons',
+                name: RouteName.ADMIN_PANEL_PERSONS,
+                component: () => import("@view/admin/AdminTablesView.vue"),
+            }
+        ]
     },
     {
         path: '/:pathMatch(.*)*',
@@ -56,10 +80,25 @@ router.beforeEach(async (to) => {
         }
     }
 
+    if (authStore.accessToken && !authStore.isAuthenticated) {
+        await authStore.setAccessTokenRequest()
+    }
+
     if (authStore.isAuthenticated && AuthPages.includes(to.name as RouteName)) {
         return { name: RouteName.DASHBOARD }
     } else if (!authStore.isAuthenticated && !AuthPages.includes(to.name as RouteName)) {
         return { name: RouteName.LOGIN }
+    }
+
+    if (to.meta.adminOnly) {
+        try {
+            await authStore.setAuthUserRequest()
+        } catch (error) {
+            console.log(error)
+        }
+        if (!authStore.isAdmin) {
+            return { name: RouteName.DASHBOARD }
+        }
     }
 })
 

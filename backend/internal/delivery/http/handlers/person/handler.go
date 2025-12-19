@@ -34,7 +34,7 @@ func (h *Handler) Create(c *gin.Context) {
 		return
 	}
 
-	context.RespondWithValue(c, http.StatusCreated, gin.H{"personID": personID})
+	context.RespondWithValue(c, http.StatusCreated, gin.H{"personId": personID})
 }
 
 func (h *Handler) Get(c *gin.Context) {
