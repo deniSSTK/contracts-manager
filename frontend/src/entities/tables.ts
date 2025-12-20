@@ -5,7 +5,7 @@ import userUsecase from "@usecase/user/usecase"
 import { ListResult } from "../infrastructure/api/dto"
 import BaseModel from "@model/baseModel"
 import Person from "@model/person/model"
-import router, {RouteName} from "../app/routes";
+import router, {RouteName} from "@app/router/routes";
 
 export interface EntityFilter {
     key: string

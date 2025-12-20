@@ -1,42 +1,37 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import useAuthStore from "@store/auth/store";
+import {
+    AdminPanelInfoView,
+    AdminPanelView,
+    AdminTablesView,
+    DashboardView,
+    LoginView,
+    SignupView
+} from "@app/router/views";
+import {AuthPages, RouteName} from "@app/router/types";
 
-export enum RouteName {
-    LOGIN = "login",
-    SIGNUP = "signup",
-
-    DASHBOARD = 'dashboard',
-
-    ADMIN_PANEL = 'admin-panel',
-    ADMIN_PANEL_TABLE = 'admin-panel-table',
-    ADMIN_PANEL_INFO = 'admin-panel-info',
-}
-
-const AuthPages: RouteName[] = [RouteName.LOGIN, RouteName.SIGNUP]
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
         name: RouteName.DASHBOARD,
-        component: () => import("@view/dashboard/DashboardView.vue"),
+        component: DashboardView,
     },
     {
         path: '/signup',
         name: RouteName.SIGNUP,
-        component: () => import("@view/auth/SignupView.vue"),
+        component: SignupView,
     },
     {
         path: '/login',
         name: RouteName.LOGIN,
-        component: () => import("@view/auth/LoginView.vue"),
+        component: LoginView,
     },
     {
         path: '/admin',
         name: RouteName.ADMIN_PANEL,
-        component: () => import("@view/admin/AdminPanelView.vue"),
-        meta: {
-            adminOnly: true,
-        },
+        component: AdminPanelView,
+        meta: { adminOnly: true },
         children: [
             {
                 path: ':entity',
@@ -44,16 +39,21 @@ const routes: RouteRecordRaw[] = [
                     {
                         path: '',
                         name: RouteName.ADMIN_PANEL_TABLE,
-                        component: () => import("@view/admin/AdminTablesView.vue"),
+                        component: AdminTablesView,
                     },
                     {
                         path: 'info/:entityId',
                         name: RouteName.ADMIN_PANEL_INFO,
-                        component: () => import("@view/admin/AdminPanelInfoVIew.vue")
-                    }
-                ]
+                        component: AdminPanelInfoView,
+                    },
+                    {
+                        path: 'new',
+                        name: RouteName.ADMIN_PANEL_NEW,
+                        component: AdminPanelInfoView,
+                    },
+                ],
             },
-        ]
+        ],
     },
     {
         path: '/:pathMatch(.*)*',

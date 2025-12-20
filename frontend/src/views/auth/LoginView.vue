@@ -28,7 +28,7 @@
                 />
             </div>
             <Button type="submit" :disabled="!canSendReq">Log In</Button>
-            <router-link :to="{ name: RouteName.SIGNUP }">Don't have an account? <span class="primary">Register</span></router-link>
+            <router-link :to="{ name: RouteName.SIGNUP }">Don't have an account? <span class="primary">Sign up</span></router-link>
         </form>
     </main>
 </template>
@@ -37,7 +37,7 @@
 import {reactive, computed} from "vue";
 import authUsecase from "@usecase/auth/usecase";
 import {ILoginDTO} from "@repository/auth/repository";
-import router, {RouteName} from "../../app/routes";
+import router, {RouteName} from "@app/router/routes";
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 

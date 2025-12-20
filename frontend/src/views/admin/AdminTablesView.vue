@@ -3,7 +3,7 @@
         <Button>Cancel</Button>
     </router-link>
 
-    <router-link :to="{ query: { new: 'true' } }" v-else>
+    <router-link :to="{ name: RouteName.ADMIN_PANEL_NEW }" v-else>
         <Button>Create new {{name}}</Button>
     </router-link>
 
@@ -17,6 +17,7 @@ import {useRoute} from "vue-router";
 import AdminPanelTable from "@component/admin/panelTable/AdminPanelTable.vue";
 import AdminCreateNewEntity from "@view/admin/AdminCreateNewEntity.vue";
 import Button from "@component/ui/button/Button.vue";
+import {RouteName} from "@app/router/routes";
 
 const route = useRoute()
 

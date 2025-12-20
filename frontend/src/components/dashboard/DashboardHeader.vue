@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import Button from "@component/ui/button/Button.vue";
 import useAuthStore from "@store/auth/store";
-import {RouteName} from "../../app/routes";
+import {RouteName} from "@app/router/routes";
 
 const authStore = useAuthStore()
 </script>

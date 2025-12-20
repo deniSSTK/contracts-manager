@@ -90,9 +90,5 @@ onMounted(fetchData)
     .button {
         width: max-content;
     }
-
-    .label {
-        opacity: .7;
-    }
 }
 </style>

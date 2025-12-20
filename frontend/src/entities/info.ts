@@ -40,14 +40,14 @@ const infoEntities: Record<string, Info> = {
         rows: [
             ...BaseModelRows,
             {
-                key: 'type',
-                label: 'Type',
-                values: ['individual', 'entity'],
+                key: 'name',
+                label: 'Name',
                 canChange: true,
             },
             {
-                key: 'name',
-                label: 'Name',
+                key: 'type',
+                label: 'Type',
+                values: ['individual', 'entity'],
                 canChange: true,
             },
             {

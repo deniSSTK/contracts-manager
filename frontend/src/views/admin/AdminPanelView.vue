@@ -33,14 +33,16 @@
                 <Button>Persons</Button>
             </router-link>
         </nav>
+        <Return v-if="route.name != RouteName.ADMIN_PANEL"/>
         <router-view :key="route.name" />
     </main>
 </template>
 
 <script lang="ts" setup>
 import Button from "@component/ui/button/Button.vue";
-import {RouteName} from "../../app/routes";
+import {RouteName} from "@app/router/routes";
 import {useRoute} from "vue-router";
+import Return from "@component/ui/button/return/Return.vue";
 
 const route = useRoute()
 </script>

@@ -17,6 +17,7 @@
       "@component/*": ["components/*"],
       "@view/*": ["views/*"],
       "@entity/*": ["entities/*"],
+      "@app/*": ["app/*"],
       "@repository/*": ["infrastructure/api/repositories/*"],
     }
   },

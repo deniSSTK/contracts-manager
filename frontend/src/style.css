@@ -58,6 +58,14 @@ header {
     justify-content: space-between;
 }
 
+svg {
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+}
+
 .primary {
     color: var(--color-primary);
 }
