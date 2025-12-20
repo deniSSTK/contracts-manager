@@ -17,8 +17,8 @@ export interface CreatePersonResponse {
 export class PersonRepository {
     private readonly api: Api = api;
 
-    async list(filters: string): Promise<ListResult<Person>> {
-        return this.api.get("/person/?" + filters)
+    async get(id: string): Promise<Person> {
+        return this.api.get(`/person/${id}`)
     }
 
     async create(dto: CreatePersonDTO): Promise<boolean> {
@@ -30,10 +30,6 @@ export class PersonRepository {
         }
     }
 
-    async get(id: string): Promise<Person> {
-        return this.api.get(`/person/${id}`)
-    }
-
     async update(dto: any, id: string): Promise<boolean> {
         try {
             await this.api.put(`/person/${id}`, dto);
@@ -41,6 +37,10 @@ export class PersonRepository {
         } catch {
             return false
         }
+    }
+
+    async list(filters: string): Promise<ListResult<Person>> {
+        return this.api.get("/person/?" + filters)
     }
 }
 

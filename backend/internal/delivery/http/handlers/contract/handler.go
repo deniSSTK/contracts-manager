@@ -6,6 +6,7 @@ import (
 	contractusecase "contracts-manager/internal/usecases/contract"
 	"contracts-manager/internal/utils/context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -162,4 +163,42 @@ func (h *Handler) Import(c *gin.Context) {
 
 func (h *Handler) Export(c *gin.Context) {
 	filehandler.Export(c, h.contractUC)
+}
+
+func (h *Handler) List(c *gin.Context) {
+	code := c.Query("code")
+	title := c.Query("title")
+	description := c.Query("description")
+
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "20")
+
+	page, _ := strconv.Atoi(pageStr)
+	limit, _ := strconv.Atoi(limitStr)
+
+	filter := contract.Filter{
+		Code:        nil,
+		Title:       nil,
+		Description: nil,
+		Page:        page,
+		Limit:       limit,
+	}
+
+	if code != "" {
+		filter.Code = &code
+	}
+	if title != "" {
+		filter.Title = &title
+	}
+	if description != "" {
+		filter.Description = &description
+	}
+
+	result, err := h.contractUC.List(c.Request.Context(), filter)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusOK, result)
 }

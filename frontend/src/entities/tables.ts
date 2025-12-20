@@ -7,6 +7,7 @@ import Person from "@model/person/model"
 import router from "@app/router/routes";
 import {RouteName} from "@app/router/types";
 import authUsecase from "@usecase/auth/usecase";
+import Contract from "@model/contract/entity";
 
 export interface EntityFilter {
     key: string
@@ -25,7 +26,7 @@ interface EntityConfig<T extends BaseModel = BaseModel> {
 
 interface EntityAction<T = any> {
     label: string
-    callback: (row: T) => void | Promise<void>
+    callback: (row: T) => void
 }
 
 interface EntityColumn<T = any> {
@@ -35,6 +36,20 @@ interface EntityColumn<T = any> {
     optional?: boolean;
 
     actions?: EntityAction<T>[]
+}
+
+function infoAction<T extends BaseModel>(entity: string): EntityAction<T> {
+    return {
+        label: "Info",
+        callback: async (row) =>
+            await router.push({
+                name: RouteName.ADMIN_PANEL_INFO,
+                params: {
+                    entity,
+                    entityId: row.id,
+                },
+            }),
+    }
 }
 
 export const entityRegistry = {
@@ -48,23 +63,10 @@ export const entityRegistry = {
             { key: "email", label: "Email", optional: true },
             { key: "phone", label: "Phone", optional: true },
             {
-                key: "contracts",
-                label: "Check contracts",
-                actions: [
-                    {
-                        label: "Info",
-                        callback: async (row: Person) => {
-                            await router.push({
-                                name: RouteName.ADMIN_PANEL_INFO,
-                                params: {
-                                    entity: "person",
-                                    entityId: row.id,
-                                },
-                            })
-                        },
-                    }
-                ]
-            }
+                key: "actions",
+                label: "actions",
+                actions: [infoAction("person")],
+            },
         ],
         filters: [
             { key: "code", placeholder: "Code" },
@@ -76,14 +78,22 @@ export const entityRegistry = {
     contract: {
         usecase: contractUsecase,
         columns: [
+            { key: "code", label: "Code" },
             { key: "title", label: "Title" },
-            { key: "status", label: "Status" },
-            { key: "number", label: "Number" },
+            { key: "description", label: "Description", optional: true },
+            { key: "startDate", label: "Start Date", optional: true },
+            { key: "endDate", label: "End Date", optional: true },
+            {
+                key: "actions",
+                label: "actions",
+                actions: [infoAction("contract")],
+            },
         ],
         filters: [
+            { key: "code", placeholder: "Code" },
             { key: "title", placeholder: "Title" },
-            { key: "status", placeholder: "Status" },
-        ]
+            { key: "description", placeholder: "Description" },
+        ],
     },
 
     user: {

@@ -8,7 +8,7 @@ import (
 )
 
 type CreateDTO struct {
-	Number      string     `json:"number" binding:"required"`
+	Code        string     `json:"code" binding:"required"`
 	Title       string     `json:"title" binding:"required"`
 	Description *string    `json:"description"`
 	StartDate   *time.Time `json:"startDate"`
@@ -16,7 +16,7 @@ type CreateDTO struct {
 }
 
 type UpdateDTO struct {
-	Number      *string     `json:"number"`
+	Code        *string     `json:"code"`
 	Title       *string     `json:"title"`
 	Description **string    `json:"description"`
 	StartDate   **time.Time `json:"startDate"`
@@ -27,4 +27,12 @@ type AddPersonDTO struct {
 	ContractID uuid.UUID
 	PersonID   uuid.UUID
 	Role       models.ContractRole
+}
+
+type Filter struct {
+	Code        *string
+	Title       *string
+	Description *string
+	Page        int
+	Limit       int
 }

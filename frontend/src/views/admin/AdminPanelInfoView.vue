@@ -130,7 +130,7 @@ onMounted(async () => {
     }
 
     select, .input {
-        max-width: 30%;
+        max-width: 50%;
     }
 
     .button {

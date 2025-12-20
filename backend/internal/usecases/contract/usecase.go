@@ -2,6 +2,7 @@ package contractusecase
 
 import (
 	"context"
+	"contracts-manager/internal/delivery/http/dto"
 	"contracts-manager/internal/domain/contract"
 	"contracts-manager/internal/infrastructure/db/models"
 	"contracts-manager/internal/infrastructure/db/repositories"
@@ -41,8 +42,8 @@ func (uc *Usecase) Update(
 ) (*models.Contract, error) {
 	data := map[string]interface{}{}
 
-	if dto.Number != nil {
-		data["number"] = *dto.Number
+	if dto.Code != nil {
+		data["code"] = *dto.Code
 	}
 	if dto.Title != nil {
 		data["title"] = *dto.Title
@@ -112,8 +113,8 @@ func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []stri
 			dto := contract.CreateDTO{}
 			for i, h := range fileHeaders {
 				switch h {
-				case "number":
-					dto.Number = record[i]
+				case "code":
+					dto.Code = record[i]
 				case "title":
 					dto.Title = record[i]
 				case "description":
@@ -144,12 +145,12 @@ func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []stri
 }
 
 func (uc *Usecase) ExportCSV(ctx context.Context, w io.Writer) error {
-	headers := []string{"id", "number", "title", "description", "startDate", "endDate"}
+	headers := []string{"id", "code", "title", "description", "startDate", "endDate"}
 
 	return uc.fileUsecase.ExportCSV(ctx, w, headers, func(c models.Contract) []string {
 		record := []string{
 			c.ID.String(),
-			c.Number,
+			c.Code,
 			c.Title,
 		}
 
@@ -177,4 +178,8 @@ func (uc *Usecase) ExportCSV(ctx context.Context, w io.Writer) error {
 
 func (uc *Usecase) ExportJSON(ctx context.Context, w io.Writer) error {
 	return uc.fileUsecase.ExportJSON(ctx, w)
+}
+
+func (uc *Usecase) List(ctx context.Context, filter contract.Filter) (*dto.ListResult[models.Contract], error) {
+	return uc.contractRepo.List(ctx, filter)
 }

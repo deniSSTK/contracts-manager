@@ -34,7 +34,7 @@
             </router-link>
         </nav>
         <Return v-if="route.name != RouteName.ADMIN_PANEL"/>
-        <router-view :key="route.params.entity as string" />
+        <router-view :key="$route.fullPath" />
     </main>
 </template>
 

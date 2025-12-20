@@ -100,7 +100,7 @@ func (h *Handler) List(c *gin.Context) {
 	page, _ := strconv.Atoi(pageStr)
 	limit, _ := strconv.Atoi(limitStr)
 
-	filter := person.PersonFilter{
+	filter := person.Filter{
 		Name:  nil,
 		Type:  nil,
 		Code:  nil,

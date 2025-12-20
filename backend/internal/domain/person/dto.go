@@ -18,19 +18,12 @@ type UpdateDTO struct {
 	Phone **string           `json:"phone,omitempty"`
 }
 
-type PersonFilter struct {
+type Filter struct {
 	Name  *string
 	Type  *string
 	Code  *string
 	Page  int
 	Limit int
-}
-
-type PersonListResult struct {
-	Data  []models.Person `json:"data"`
-	Page  int             `json:"page"`
-	Limit int             `json:"limit"`
-	Total int64           `json:"total"`
 }
 
 type ImportResponse struct {

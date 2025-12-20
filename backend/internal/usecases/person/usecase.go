@@ -2,6 +2,7 @@ package personusecase
 
 import (
 	"context"
+	"contracts-manager/internal/delivery/http/dto"
 	"contracts-manager/internal/domain/person"
 	"contracts-manager/internal/infrastructure/db/models"
 	"contracts-manager/internal/infrastructure/db/repositories"
@@ -66,7 +67,7 @@ func (uc *Usecase) Delete(ctx context.Context, personID uuid.UUID) error {
 	return uc.personRepo.Delete(ctx, personID)
 }
 
-func (uc *Usecase) List(ctx context.Context, filter person.PersonFilter) (*person.PersonListResult, error) {
+func (uc *Usecase) List(ctx context.Context, filter person.Filter) (*dto.ListResult[models.Person], error) {
 	return uc.personRepo.List(ctx, filter)
 }
 

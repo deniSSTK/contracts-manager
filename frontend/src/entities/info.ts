@@ -1,6 +1,8 @@
 import personUsecase from '@usecase/person/usecase'
 import { CreatePersonDTO } from '@repository/person/repository'
 import authUsecase from "@usecase/auth/usecase";
+import contractUsecase from "@usecase/contract/usecase";
+import {CreateContractDTO} from "@repository/contract/repository";
 
 interface InfoRow {
     key: string
@@ -51,18 +53,18 @@ const infoEntities: Record<string, Info> = {
         usecase: personUsecase,
         rows: [
             ...BaseModelRows,
-            { key: 'name', label: 'Name', canChange: true, min: 2, max: 255 },
-            { key: 'type', label: 'Type', values: ['individual', 'entity'], canChange: true },
-            { key: 'code', label: 'Code', canChange: true, min: 3, max: 50 },
-            { key: 'email', label: 'Email', optional: true, canChange: true },
-            { key: 'phone', label: 'Phone', optional: true, canChange: true },
+            {key: 'name', label: 'Name', canChange: true, min: 2, max: 255},
+            {key: 'type', label: 'Type', values: ['individual', 'entity'], canChange: true},
+            {key: 'code', label: 'Code', canChange: true, min: 3, max: 50},
+            {key: 'email', label: 'Email', optional: true, canChange: true},
+            {key: 'phone', label: 'Phone', optional: true, canChange: true},
         ],
         createDto: (form): CreatePersonDTO => ({
             name: form.name,
             type: form.type,
             code: form.code,
-            email: form.email ?? null,
-            phone: form.phone ?? null,
+            email: form.email,
+            phone: form.phone,
         }),
     },
     user: {
@@ -70,11 +72,30 @@ const infoEntities: Record<string, Info> = {
         usecase: authUsecase,
         rows: [
             ...BaseModelRows,
-            { key: 'username', label: 'Username', canChange: true, min: 5, max: 50 },
-            { key: 'email', label: 'Email', canChange: true, max: 100 },
-            { key: 'type', label: 'Type', canChange: true },
-            { key: 'personId', label: 'PersonID', optional: true, canChange: true },
+            {key: 'username', label: 'Username', canChange: true, min: 5, max: 50},
+            {key: 'email', label: 'Email', canChange: true, max: 100},
+            {key: 'type', label: 'Type', canChange: true},
+            {key: 'personId', label: 'PersonID', optional: true, canChange: true},
         ]
+    },
+    contract: {
+        canCreate: true,
+        usecase: contractUsecase,
+        rows: [
+            ...BaseModelRows,
+            {key: 'code', label: 'Code', canChange: true, min: 1, max: 100},
+            {key: 'title', label: 'Title', canChange: true, min: 1, max: 255},
+            {key: 'description', label: 'Description', canChange: true, optional: true},
+            {key: 'startDate', label: 'Start Date', canChange: true, optional: true},
+            {key: 'endDate', label: 'End Date', canChange: true, optional: true},
+        ],
+        createDto: (form): CreateContractDTO => ({
+            code: form.code,
+            title: form.title,
+            description: form.description,
+            startDate: form.startDate,
+            endDate: form.endDate,
+        }),
     },
 }
 

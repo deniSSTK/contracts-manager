@@ -13,4 +13,9 @@
     &:focus {
         border-color: var(--color-primary);
     }
+
+    &:disabled {
+        background: var(--border-color);
+        cursor: not-allowed;
+    }
 }
