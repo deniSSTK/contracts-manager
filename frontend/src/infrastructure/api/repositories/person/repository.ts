@@ -24,6 +24,10 @@ export class PersonRepository {
     async create(dto: CreatePersonDTO): Promise<CreatePersonResponse> {
         return this.api.post("/person/", dto)
     }
+
+    async get(id: string): Promise<Person> {
+        return this.api.get(`/person/${id}`)
+    }
 }
 
 const personRepository = new PersonRepository();

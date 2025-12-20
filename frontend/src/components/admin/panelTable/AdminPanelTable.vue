@@ -75,7 +75,7 @@ import { useRoute } from "vue-router";
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 
-import { entityRegistry } from "../../../entities";
+import { entityRegistry } from "../../../entities/tables";
 
 import "./admin-panel-table.css";
 
@@ -134,7 +134,7 @@ function resetFilters() {
     Object.keys(filters).forEach(key => {
         filters[key] = "";
     });
-    
+
     fetchData();
 }
 

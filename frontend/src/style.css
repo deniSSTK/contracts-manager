@@ -2,6 +2,7 @@
     --white: #fff;
     --black: #000;
     --border-color: #ccc;
+    --red: #cb2a2a;
 
     --color-primary: #46e590;
     --color-primary-hover: #40dc89;
@@ -70,6 +71,10 @@ header {
     flex-direction: column;
 
     padding: var(--padding-md);
+}
+
+.red {
+    color: var(--red);
 }
 
 @media (max-width: 800px) {

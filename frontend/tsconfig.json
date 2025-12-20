@@ -16,6 +16,7 @@
       "@usecase/*": ["usecases/*"],
       "@component/*": ["components/*"],
       "@view/*": ["views/*"],
+      "@entity/*": ["entities/*"],
       "@repository/*": ["infrastructure/api/repositories/*"],
     }
   },

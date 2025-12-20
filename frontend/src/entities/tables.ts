@@ -12,30 +12,22 @@ export interface EntityFilter {
     placeholder: string
 }
 
-export interface EntityColumn {
-    key: string
-    label: string
-
-    action?: boolean
-    callback?: Function
-}
-
-export interface EntityUsecase<T extends BaseModel = BaseModel> {
+interface EntityUsecase<T extends BaseModel = BaseModel> {
     list: (filters: string) => Promise<ListResult<T>>
 }
 
-export interface EntityConfig<T extends BaseModel = BaseModel> {
+interface EntityConfig<T extends BaseModel = BaseModel> {
     usecase: EntityUsecase<T>
     columns: EntityColumn[]
     filters: EntityFilter[]
 }
 
-export interface EntityAction<T = any> {
+interface EntityAction<T = any> {
     label: string
     callback: (row: T) => void | Promise<void>
 }
 
-export interface EntityColumn<T = any> {
+interface EntityColumn<T = any> {
     key: string
     label: string
 

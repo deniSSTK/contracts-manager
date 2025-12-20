@@ -19,6 +19,7 @@ export default defineConfig({
             '@usecase': path.resolve(__dirname, 'src/usecases'),
             '@component': path.resolve(__dirname, 'src/components'),
             '@view': path.resolve(__dirname, 'src/views'),
+            '@entity': path.resolve(__dirname, 'src/entities'),
             '@repository': path.resolve(__dirname, 'src/infrastructure/api/repositories'),
         }
     }

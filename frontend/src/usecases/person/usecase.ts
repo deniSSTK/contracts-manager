@@ -12,6 +12,10 @@ export class PersonUsecase {
     async create(dto: CreatePersonDTO): Promise<CreatePersonResponse> {
         return this.personRepository.create(dto);
     }
+
+    async get(id: string): Promise<Person> {
+        return this.personRepository.get(id);
+    }
 }
 
 const personUsecase = new PersonUsecase();

@@ -1,6 +1,6 @@
 import BaseModel from "@model/baseModel";
 
-export type PersonType = 'individual' | 'company' | 'other';
+export type PersonType = 'individual' | 'entity';
 
 interface Person extends BaseModel {
     type: PersonType;
