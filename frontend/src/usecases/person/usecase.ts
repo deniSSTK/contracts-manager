@@ -16,6 +16,10 @@ export class PersonUsecase {
     async get(id: string): Promise<Person> {
         return this.personRepository.get(id);
     }
+
+    async update(dto: any, id: string): Promise<boolean> {
+        return this.personRepository.update(dto, id);
+    }
 }
 
 const personUsecase = new PersonUsecase();

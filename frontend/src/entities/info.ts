@@ -18,6 +18,7 @@ interface InfoRow {
 interface InfoBase {
     usecase: {
         get: (id: string) => Promise<any>
+        update: (dto: any, id: string) => Promise<boolean>
     }
     rows: InfoRow[]
 }
@@ -69,9 +70,9 @@ const infoEntities: Record<string, Info> = {
         usecase: authUsecase,
         rows: [
             ...BaseModelRows,
-            { key: 'username', label: 'Username' },
-            { key: 'email', label: 'Email' },
-            { key: 'type', label: 'Type' },
+            { key: 'username', label: 'Username', canChange: true, min: 5, max: 50 },
+            { key: 'email', label: 'Email', canChange: true, max: 100 },
+            { key: 'type', label: 'Type', canChange: true },
             { key: 'personId', label: 'PersonID', optional: true, canChange: true },
         ]
     },

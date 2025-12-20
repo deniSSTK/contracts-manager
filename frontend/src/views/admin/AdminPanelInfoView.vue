@@ -39,10 +39,11 @@
             </div>
         </template>
 
-        <span v-if="created">
+
+        <template v-if="created">
             <span v-if="createdError" class="red">An error occurred</span>
             <span v-else class="primary">Success</span>
-        </span>
+        </template>
         <Button v-else type="submit">{{ isNew ? 'Create' : 'Update' }}</Button>
     </form>
 </template>
@@ -67,6 +68,7 @@ const loading = ref<boolean>(!isNew)
 const created = ref<boolean>(false)
 const createdError = ref<boolean>(false)
 const form = reactive<Record<string, any>>({})
+const originalForm = reactive<Record<string, any>>({})
 
 async function fetchData() {
     if (!isNew) {
@@ -75,8 +77,9 @@ async function fetchData() {
         const data = await entityConfig.value.usecase.get(id)
 
         entityConfig.value.rows.forEach(row => {
-            form[row.key] = (data as any)[row.key] ?? null
-        })
+            form[row.key] = (data as any)[row.key] ?? null;
+            originalForm[row.key] = (data as any)[row.key] ?? null;
+        });
 
         loading.value = false
     }
@@ -84,14 +87,33 @@ async function fetchData() {
 
 const handleSubmit = async () => {
     if (isNew && entityConfig.value.canCreate) {
-        if (!await entityConfig.value.usecase.create(form)) {
+
+        const ok = await entityConfig.value.usecase.create(form)
+
+        if (!ok) {
             createdError.value = true
         }
         created.value = true
+    } else if (!isNew) {
+        const updatedFields: Record<string, any> = {};
+
+        for (const key in form) {
+            if (form[key] !== originalForm[key]) {
+                updatedFields[key] = form[key];
+            }
+        }
+
+        if (Object.keys(updatedFields).length > 0) {
+            const success = await entityConfig.value.usecase.update(updatedFields, id);
+            created.value = success;
+            createdError.value = !success;
+        }
     }
 }
 
-onMounted(fetchData)
+onMounted(async () => {
+    await fetchData()
+})
 </script>
 
 <style scoped>

@@ -25,13 +25,22 @@ export class PersonRepository {
         try {
             await this.api.post("/person/", dto);
             return true;
-        } catch (err) {
+        } catch {
             return false;
         }
     }
 
     async get(id: string): Promise<Person> {
         return this.api.get(`/person/${id}`)
+    }
+
+    async update(dto: any, id: string): Promise<boolean> {
+        try {
+            await this.api.put(`/person/${id}`, dto);
+            return true
+        } catch {
+            return false
+        }
     }
 }
 

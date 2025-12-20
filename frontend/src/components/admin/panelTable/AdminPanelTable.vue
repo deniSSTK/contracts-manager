@@ -94,7 +94,7 @@ const entity = computed(() => {
 
 const data = ref<any[]>([]);
 const page = ref(1);
-const limit = 20;
+const limit = 10;
 const totalPages = ref(1);
 
 const filters = reactive<Record<string, string>>({});
@@ -146,5 +146,7 @@ watch(
     }
 );
 
-onMounted(fetchData);
+onMounted(async () => {
+    await fetchData()
+});
 </script>

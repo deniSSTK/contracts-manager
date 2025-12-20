@@ -15,9 +15,9 @@
     --border-sm: 2px;
     --border-md: calc(var(--border-sm) * 2);
 
-    --font-size-sm: 12px;
-    --font-size-md: 16px;
-    --font-size-lg: 48px;
+    --font-size-sm: .7rem;
+    --font-size-md: .9rem;
+    --font-size-lg: 3rem;
 
     --gap-sm: 8px;
     --gap-md: 32px;
