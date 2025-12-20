@@ -27,14 +27,12 @@ func (h *Handler) Create(c *gin.Context) {
 		context.RespondError(c, http.StatusBadRequest, err)
 		return
 	}
-
-	personID, err := h.personUC.Create(c.Request.Context(), dto)
-	if err != nil {
+	if err := h.personUC.Create(c.Request.Context(), dto); err != nil {
 		context.RespondError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	context.RespondWithValue(c, http.StatusCreated, gin.H{"personId": personID})
+	context.RespondVoid(c, http.StatusCreated)
 }
 
 func (h *Handler) Get(c *gin.Context) {

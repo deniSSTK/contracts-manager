@@ -109,3 +109,19 @@ func (h *Handler) GetAuthUser(c *gin.Context) {
 
 	context.RespondWithValue(c, http.StatusOK, authUser)
 }
+
+func (h *Handler) Get(c *gin.Context) {
+	userId, err := context.GetIdFromParam(c)
+	if err != nil {
+		context.RespondError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	user, err := h.authUC.GetByID(c.Request.Context(), userId)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusOK, user)
+}

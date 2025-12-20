@@ -37,7 +37,8 @@
 import {reactive, computed} from "vue";
 import authUsecase from "@usecase/auth/usecase";
 import {ILoginDTO} from "@repository/auth/repository";
-import router, {RouteName} from "@app/router/routes";
+import router from "@app/router/routes";
+import {RouteName} from "@app/router/types";
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 

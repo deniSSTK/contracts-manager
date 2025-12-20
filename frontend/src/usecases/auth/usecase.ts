@@ -1,5 +1,6 @@
 import authRepository, {AuthRepository, IAuthResponse, ILoginDTO, ISignupDTO} from "@repository/auth/repository";
 import useAuthStore, {AuthUser} from "@store/auth/store";
+import {User} from "@model/user/model";
 
 export class AuthUsecase {
     private authRepository: AuthRepository = authRepository;
@@ -34,6 +35,10 @@ export class AuthUsecase {
 
     async getAuthUser(): Promise<AuthUser> {
         return await this.authRepository.getAuthUser();
+    }
+
+    async get(id: string): Promise<User> {
+        return await this.authRepository.get(id)
     }
 }
 

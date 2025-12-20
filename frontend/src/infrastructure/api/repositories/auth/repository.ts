@@ -1,5 +1,6 @@
 import api, { Api } from "../../api";
 import {AuthUser} from "@store/auth/store";
+import {User} from "@model/user/model";
 
 export interface ISignupDTO {
     username: string;
@@ -34,6 +35,10 @@ export class AuthRepository {
 
     async getAuthUser(): Promise<AuthUser> {
         return this.api.get("/auth/user")
+    }
+
+    async get(id: string): Promise<User> {
+        return this.api.get(`/auth/user/${id}`)
     }
 }
 

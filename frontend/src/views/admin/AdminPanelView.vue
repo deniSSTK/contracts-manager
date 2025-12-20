@@ -1,7 +1,7 @@
 <template>
     <main class="page">
         <header>
-            <h1>Admin Panel <span v-if="route.name != RouteName.ADMIN_PANEL">{{route.params.entity}}</span> </h1>
+            <h1>Admin Panel: <span v-if="route.name != RouteName.ADMIN_PANEL">{{route.params.entity}}</span> </h1>
             <router-link :to="{ name: RouteName.DASHBOARD }">
                 <Button>To Dashboard</Button>
             </router-link>
@@ -40,7 +40,7 @@
 
 <script lang="ts" setup>
 import Button from "@component/ui/button/Button.vue";
-import {RouteName} from "@app/router/routes";
+import {RouteName} from "@app/router/types";
 import {useRoute} from "vue-router";
 import Return from "@component/ui/button/return/Return.vue";
 

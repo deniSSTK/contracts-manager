@@ -3,7 +3,7 @@ import {ListResult} from "../../dto";
 import Person from "@model/person/model";
 
 export interface CreatePersonDTO {
-    type: "individual" | "entity" | "";
+    type: "individual" | "entity";
     name: string;
     code: string;
     email?: string | null;
@@ -21,8 +21,13 @@ export class PersonRepository {
         return this.api.get("/person/?" + filters)
     }
 
-    async create(dto: CreatePersonDTO): Promise<CreatePersonResponse> {
-        return this.api.post("/person/", dto)
+    async create(dto: CreatePersonDTO): Promise<boolean> {
+        try {
+            await this.api.post("/person/", dto);
+            return true;
+        } catch (err) {
+            return false;
+        }
     }
 
     async get(id: string): Promise<Person> {

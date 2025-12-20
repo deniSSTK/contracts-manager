@@ -28,7 +28,7 @@ func NewUsecase(
 	}
 }
 
-func (uc *Usecase) Create(ctx context.Context, dto person.CreateDTO) (uuid.UUID, error) {
+func (uc *Usecase) Create(ctx context.Context, dto person.CreateDTO) error {
 	return uc.personRepo.Create(ctx, dto)
 }
 
@@ -75,8 +75,7 @@ func (uc *Usecase) ImportJSON(ctx context.Context, reader io.Reader) (int, []str
 		ctx,
 		reader,
 		func(ctx context.Context, dto person.CreateDTO) error {
-			_, err := uc.personRepo.Create(ctx, dto)
-			return err
+			return uc.personRepo.Create(ctx, dto)
 		},
 		func(decoder *json.Decoder) (person.CreateDTO, error) {
 			var dto person.CreateDTO
@@ -91,8 +90,7 @@ func (uc *Usecase) ImportCSV(ctx context.Context, reader io.Reader) (int, []stri
 		ctx,
 		reader,
 		func(ctx context.Context, dto person.CreateDTO) error {
-			_, err := uc.personRepo.Create(ctx, dto)
-			return err
+			return uc.personRepo.Create(ctx, dto)
 		},
 		func(fileHeaders, record []string) (person.CreateDTO, error) {
 			dto := person.CreateDTO{}

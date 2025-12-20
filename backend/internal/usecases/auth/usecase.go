@@ -3,6 +3,7 @@ package authusecase
 import (
 	"context"
 	"contracts-manager/internal/domain/auth"
+	"contracts-manager/internal/infrastructure/db/models"
 	"contracts-manager/internal/infrastructure/db/repositories"
 	"contracts-manager/internal/utils"
 
@@ -64,4 +65,8 @@ func (uc *Usecase) Signup(
 	}
 
 	return uc.userRepo.Create(ctx, dto, passwordHash)
+}
+
+func (uc *Usecase) GetByID(ctx context.Context, userId uuid.UUID) (*models.User, error) {
+	return uc.userRepo.GetUserByID(ctx, userId)
 }

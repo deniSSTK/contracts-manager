@@ -15,6 +15,7 @@
     --border-sm: 2px;
     --border-md: calc(var(--border-sm) * 2);
 
+    --font-size-sm: 12px;
     --font-size-md: 16px;
     --font-size-lg: 48px;
 
@@ -66,8 +67,16 @@ svg {
     align-items: center;
 }
 
+.primary, .red {
+    font-weight: bold;
+}
+
 .primary {
     color: var(--color-primary);
+}
+
+.red {
+    color: var(--red);
 }
 
 .page {
@@ -79,10 +88,6 @@ svg {
     flex-direction: column;
 
     padding: var(--padding-md);
-}
-
-.red {
-    color: var(--red);
 }
 
 @media (max-width: 800px) {

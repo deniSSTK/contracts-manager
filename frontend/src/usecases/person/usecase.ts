@@ -9,7 +9,7 @@ export class PersonUsecase {
         return this.personRepository.list(filters);
     }
 
-    async create(dto: CreatePersonDTO): Promise<CreatePersonResponse> {
+    async create(dto: CreatePersonDTO): Promise<boolean> {
         return this.personRepository.create(dto);
     }
 

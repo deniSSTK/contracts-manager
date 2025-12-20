@@ -36,7 +36,7 @@
                     </div>
 
                     <span v-else>
-                        {{ row[c.key] }}
+                        {{ c.optional && !row[c.key] ? "-" : row[c.key]  }}
                     </span>
                 </td>
             </tr>
@@ -75,7 +75,7 @@ import { useRoute } from "vue-router";
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 
-import { entityRegistry } from "../../../entities/tables";
+import { entityRegistry } from "@entity/tables";
 
 import "./admin-panel-table.css";
 

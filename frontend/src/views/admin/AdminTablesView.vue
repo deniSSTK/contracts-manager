@@ -1,35 +1,20 @@
 <template>
-    <router-link :to="{ query: {} }" v-if="isNew">
-        <Button>Cancel</Button>
+    <router-link :to="{ name: RouteName.ADMIN_PANEL_NEW }" v-if="infoEntities[route.params.entity as string].canCreate">
+        <Button >Create new {{route.params.entity}}</Button>
     </router-link>
 
-    <router-link :to="{ name: RouteName.ADMIN_PANEL_NEW }" v-else>
-        <Button>Create new {{name}}</Button>
-    </router-link>
-
-    <AdminCreateNewEntity v-if="isNew"/>
-    <AdminPanelTable v-else/>
+    <AdminPanelTable />
 </template>
 
 <script lang="ts" setup>
-import {ref, watch} from "vue"
 import {useRoute} from "vue-router";
-import AdminPanelTable from "@component/admin/panelTable/AdminPanelTable.vue";
-import AdminCreateNewEntity from "@view/admin/AdminCreateNewEntity.vue";
+import {RouteName} from "@app/router/types";
+
 import Button from "@component/ui/button/Button.vue";
-import {RouteName} from "@app/router/routes";
+import AdminPanelTable from "@component/admin/panelTable/AdminPanelTable.vue";
+import infoEntities from "@entity/info";
 
 const route = useRoute()
-
-const name = route.params.entity
-const isNew = ref<boolean>(!!route.query.new)
-
-watch(
-    () => route.query.new,
-    (newVal) => {
-        isNew.value = !!newVal
-    }
-)
 </script>
 
 <style>

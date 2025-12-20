@@ -1,41 +1,50 @@
 <template>
-    <h1>Info</h1>
+    <h1 v-if="isNew">Create new</h1>
+    <h1 v-else>Info</h1>
 
     <div v-if="loading">Loading...</div>
 
-    <div v-else class="info">
-        <div
-            v-for="row in entityConfig.rows"
-            :key="row.key"
-            class="info-row"
-        >
-            <label class="label">
-                {{ row.label }}<span v-if="!row.optional && row.canChange" class="red">*</span>
-            </label>
-
-            <select
-                v-if="row.values"
-                v-model="form[row.key]"
-                :disabled="!row.canChange"
+    <form v-else class="info" @submit.prevent="handleSubmit" >
+        <template v-for="row in entityConfig.rows" :key="row.key">
+            <div
+                v-if="!isNew || (isNew && row.canChange)"
+                class="info-row"
             >
-                <option
-                    v-for="v in row.values"
-                    :key="v"
-                    :value="v"
+                <label class="label">
+                    {{ row.label }}<span v-if="!row.optional && row.canChange" class="red">*</span>
+                </label>
+                <select
+                    v-if="row.values"
+                    v-model="form[row.key]"
+                    :disabled="!row.canChange"
+                    :required="!row.optional"
                 >
-                    {{ v }}
-                </option>
-            </select>
+                    <option
+                        v-for="v in row.values"
+                        :key="v"
+                        :value="v"
+                    >
+                        {{ v }}
+                    </option>
+                </select>
 
-            <Input
-                v-else
-                v-model="form[row.key]"
-                :disabled="!row.canChange"
-            />
-        </div>
+                <Input
+                    v-else
+                    v-model="form[row.key]"
+                    :disabled="!row.canChange"
+                    :required="!row.optional"
+                    :minlength="row.min"
+                    :maxlength="row.max"
+                />
+            </div>
+        </template>
 
-        <Button>Update</Button>
-    </div>
+        <span v-if="created">
+            <span v-if="createdError" class="red">An error occurred</span>
+            <span v-else class="primary">Success</span>
+        </span>
+        <Button v-else type="submit">{{ isNew ? 'Create' : 'Update' }}</Button>
+    </form>
 </template>
 
 <script lang="ts" setup>
@@ -44,27 +53,42 @@ import {onMounted, reactive, ref, computed} from "vue";
 import infoEntities from "@entity/info";
 import Input from "@component/ui/input/Input.vue";
 import Button from "@component/ui/button/Button.vue";
+import {RouteName} from "@app/router/types";
 
 const route = useRoute()
 
 const id = route.params.entityId as string
 const entity = route.params.entity as string
+const isNew = route.name === RouteName.ADMIN_PANEL_NEW
 
 const entityConfig = computed(() => infoEntities[entity])
 
-const loading = ref(true)
+const loading = ref<boolean>(!isNew)
+const created = ref<boolean>(false)
+const createdError = ref<boolean>(false)
 const form = reactive<Record<string, any>>({})
 
 async function fetchData() {
-    loading.value = true
+    if (!isNew) {
+        loading.value = true
 
-    const data = await entityConfig.value.usecase.get(id)
+        const data = await entityConfig.value.usecase.get(id)
 
-    entityConfig.value.rows.forEach(row => {
-        form[row.key] = (data as any)[row.key] ?? null
-    })
+        entityConfig.value.rows.forEach(row => {
+            form[row.key] = (data as any)[row.key] ?? null
+        })
 
-    loading.value = false
+        loading.value = false
+    }
+}
+
+const handleSubmit = async () => {
+    if (isNew && entityConfig.value.canCreate) {
+        if (!await entityConfig.value.usecase.create(form)) {
+            createdError.value = true
+        }
+        created.value = true
+    }
 }
 
 onMounted(fetchData)

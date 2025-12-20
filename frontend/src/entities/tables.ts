@@ -1,11 +1,12 @@
 import personUsecase from "@usecase/person/usecase"
 import contractUsecase from "@usecase/contract/usecase"
-import userUsecase from "@usecase/user/usecase"
 
 import { ListResult } from "../infrastructure/api/dto"
 import BaseModel from "@model/baseModel"
 import Person from "@model/person/model"
-import router, {RouteName} from "@app/router/routes";
+import router from "@app/router/routes";
+import {RouteName} from "@app/router/types";
+import authUsecase from "@usecase/auth/usecase";
 
 export interface EntityFilter {
     key: string
@@ -31,6 +32,8 @@ interface EntityColumn<T = any> {
     key: string
     label: string
 
+    optional?: boolean;
+
     actions?: EntityAction<T>[]
 }
 
@@ -42,6 +45,8 @@ export const entityRegistry = {
             { key: "name", label: "Name" },
             { key: "type", label: "Type" },
             { key: "id", label: "Id" },
+            { key: "email", label: "Email", optional: true },
+            { key: "phone", label: "Phone", optional: true },
             {
                 key: "contracts",
                 label: "Check contracts",
@@ -82,7 +87,7 @@ export const entityRegistry = {
     },
 
     user: {
-        usecase: userUsecase,
+        usecase: authUsecase,
         columns: [
             { key: "email", label: "Email" },
             { key: "role", label: "Role" },

@@ -33,8 +33,18 @@
         tbody {
             tr {
                 td {
+                    font-size: var(--font-size-sm);
+
                     border: var(--border);
                     padding: var(--padding-md-comp);
+
+                    span {
+                        display: inline-block;
+                        max-width: 100%;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
 
                     .actions {
                         display: flex;
