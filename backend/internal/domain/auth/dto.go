@@ -15,6 +15,7 @@ type SignupDTO struct {
 	Username string `binding:"required,min=5,max=50" json:"username"`
 	Email    string `binding:"required,email" json:"email"`
 	Password string `binding:"required,min=8" json:"password"`
+	Type     *models.UserType
 }
 
 type AuthResponse struct {

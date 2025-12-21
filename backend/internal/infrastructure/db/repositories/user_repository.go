@@ -27,7 +27,7 @@ func (r *UserRepository) Create(
 		Username:     dto.Username,
 		Email:        dto.Email,
 		PasswordHash: passwordHash,
-		Type:         models.UserTypeRegular,
+		Type:         *dto.Type,
 	}
 
 	if err := r.db.WithContext(ctx).Create(&newUser).Error; err != nil {

@@ -20,7 +20,6 @@ type Usecase struct {
 func NewUsecase(
 	userRepo *repositories.UserRepository,
 	contractUC *contractusecase.Usecase,
-
 ) *Usecase {
 	return &Usecase{
 		userRepo,
@@ -60,6 +59,11 @@ func (uc *Usecase) Signup(
 	ctx context.Context,
 	dto auth.SignupDTO,
 ) (uuid.UUID, error) {
+	if dto.Type == nil {
+		usertype := models.UserTypeRegular
+		dto.Type = &usertype
+	}
+
 	emailExists, err := uc.userRepo.CheckEmailExists(ctx, dto.Email)
 	if err != nil {
 		return uuid.Nil, err

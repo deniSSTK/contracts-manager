@@ -1,17 +1,22 @@
 package authhandler
 
 import (
+	gocontext "context"
 	"contracts-manager/internal/domain/auth"
+	"contracts-manager/internal/infrastructure/config"
+	"contracts-manager/internal/infrastructure/logger"
 	"contracts-manager/internal/infrastructure/token"
 	authusecase "contracts-manager/internal/usecases/auth"
 	"contracts-manager/internal/utils"
 	"contracts-manager/internal/utils/context"
 	"contracts-manager/internal/utils/cookie"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 type Handler struct {
@@ -22,7 +27,17 @@ type Handler struct {
 func NewHandler(
 	authUC *authusecase.Usecase,
 	jwtProvider *token.JWTProvider,
+	cfg *config.Config,
+	log *logger.Logger,
 ) *Handler {
+	adminId, err := authUC.Signup(gocontext.Background(), cfg.Admin)
+
+	if err != nil {
+		log.Errorf(errors.New("failed to create admin"), err)
+	} else {
+		log.Info("created admin", zap.String("adminId", adminId.String()))
+	}
+
 	return &Handler{
 		authUC:      authUC,
 		jwtProvider: jwtProvider,
