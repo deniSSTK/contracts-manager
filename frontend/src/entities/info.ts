@@ -8,6 +8,8 @@ interface InfoRow {
     key: string
     label: string
 
+    type?: 'time',
+
     values?: string[]
 
     min?: number;
@@ -43,8 +45,8 @@ export type Info<CreateDto = any> =
 
 const BaseModelRows: InfoRow[] = [
     { key: 'id', label: 'Id' },
-    { key: 'createdAt', label: 'Created At' },
-    { key: 'updatedAt', label: 'Last Update At' },
+    { key: 'createdAt', label: 'Created At', type: 'time' },
+    { key: 'updatedAt', label: 'Last Update At', type: 'time' },
 ]
 
 const infoEntities: Record<string, Info> = {
@@ -86,8 +88,8 @@ const infoEntities: Record<string, Info> = {
             {key: 'code', label: 'Code', canChange: true, min: 1, max: 100},
             {key: 'title', label: 'Title', canChange: true, min: 1, max: 255},
             {key: 'description', label: 'Description', canChange: true, optional: true},
-            {key: 'startDate', label: 'Start Date', canChange: true, optional: true},
-            {key: 'endDate', label: 'End Date', canChange: true, optional: true},
+            {key: 'startDate', label: 'Start Date', canChange: true, optional: true, type: 'time'},
+            {key: 'endDate', label: 'End Date', canChange: true, optional: true, type: 'time'},
         ],
         createDto: (form): CreateContractDTO => ({
             code: form.code,

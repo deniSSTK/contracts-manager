@@ -59,7 +59,6 @@ export class ContractRepository {
     }
 
     async addPerson(dto: AddPersonDTO): Promise<any> {
-        console.log('here')
         return this.api.post("/contract/person", dto)
     }
 

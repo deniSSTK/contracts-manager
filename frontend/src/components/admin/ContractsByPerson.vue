@@ -53,7 +53,6 @@ const contracts = ref<Contract[]>([])
 
 async function loadContracts() {
     contracts.value = await contractUsecase.getContractsByPersonId(id)
-    console.log(contracts.value)
     loading.value = false
 }
 

@@ -186,3 +186,7 @@ func (h *Handler) Update(c *gin.Context) {
 
 	context.RespondWithValue(c, http.StatusOK, res)
 }
+
+func GetUserContracts(c *gin.Context) {
+	//TODO
+}

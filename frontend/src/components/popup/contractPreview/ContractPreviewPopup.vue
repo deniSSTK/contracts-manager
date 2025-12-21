@@ -62,7 +62,6 @@ const showContract = async () => {
     document.body.style.overflow = 'hidden'
     contract.value = await contractUsecase.get(contractId)
     persons.value = await contractUsecase.getPersonsByContractId(contractId)
-    console.log(persons.value)
 }
 
 watch(

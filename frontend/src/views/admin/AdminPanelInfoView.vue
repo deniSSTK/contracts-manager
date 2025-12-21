@@ -35,6 +35,7 @@
                     :required="!row.optional"
                     :minlength="row.min"
                     :maxlength="row.max"
+                    :type="row.type === 'time' ? 'datetime-local' : 'text'"
                 />
             </div>
         </template>
@@ -61,6 +62,7 @@ import {RouteName} from "@app/router/types";
 
 import PersonsByContract from "@component/admin/PersonsByContract.vue";
 import ContractsByPerson from "@component/admin/ContractsByPerson.vue";
+import {toDateTimeLocal} from "@util/time";
 
 const route = useRoute()
 
@@ -83,8 +85,14 @@ async function fetchData() {
         const data = await entityConfig.value.usecase.get(id)
 
         entityConfig.value.rows.forEach(row => {
-            form[row.key] = (data as any)[row.key] ?? null;
-            originalForm[row.key] = (data as any)[row.key] ?? null;
+            let value = (data as any)[row.key] ?? null;
+
+            if (row.type === 'time' && value) {
+                value = toDateTimeLocal(value);
+            }
+
+            form[row.key] = value;
+            originalForm[row.key] = value;
         });
 
         loading.value = false
@@ -93,8 +101,14 @@ async function fetchData() {
 
 const handleSubmit = async () => {
     if (isNew && entityConfig.value.canCreate) {
+        const submitForm = {...form};
+        entityConfig.value.rows.forEach(row => {
+            if (row.type === 'time' && submitForm[row.key]) {
+                submitForm[row.key] = new Date(submitForm[row.key]).toISOString();
+            }
+        });
 
-        const ok = await entityConfig.value.usecase.create(form)
+        const ok = await entityConfig.value.usecase.create(submitForm)
 
         if (!ok) {
             createdError.value = true
@@ -105,7 +119,12 @@ const handleSubmit = async () => {
 
         for (const key in form) {
             if (form[key] !== originalForm[key]) {
-                updatedFields[key] = form[key];
+                const row = entityConfig.value.rows.find(r => r.key === key);
+                if (row?.type === 'time' && form[key]) {
+                    updatedFields[key] = new Date(form[key]).toISOString();
+                } else {
+                    updatedFields[key] = form[key];
+                }
             }
         }
 
@@ -116,6 +135,7 @@ const handleSubmit = async () => {
         }
     }
 }
+
 
 onMounted(async () => {
     await fetchData()
