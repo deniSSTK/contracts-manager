@@ -13,7 +13,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ./backend:/app
-      - ./backend/db:/app/db
+      - ./backend/sqlitedb:/app/sqlitedb
 
   frontend:
     build:

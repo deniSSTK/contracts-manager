@@ -10,9 +10,9 @@ import (
 )
 
 func NewDB(log *logger.Logger) *gorm.DB {
-	dbPath := "db/contracts.db"
+	dbPath := "sqlitedb/contracts.db"
 
-	if err := os.MkdirAll("db", 0755); err != nil {
+	if err := os.MkdirAll("sqlitedb", 0755); err != nil {
 		log.Fatalf(ErrFailedToCreateDBDirectory, err)
 	}
 
