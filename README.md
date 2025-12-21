@@ -1,6 +1,6 @@
 # Project Setup
 
-## Pun
+## Run
 
 To start the project in development mode, use the following command:
 
