@@ -16,17 +16,23 @@
             </div>
 
             <div>
-                <label for="password">Password</label>
-                <Input
-                    id="password"
-                    v-model="dto.password"
-                    type="password"
-                    min="8"
-                    maxlength="50"
-                    placeholder="Input your password"
-                    required
-                />
+                <label for="username">Password</label>
+                <div class="input-container">
+                    <Input
+                        id="password"
+                        v-model="dto.password"
+                        :type="canSeePassword ? 'text' : 'password'"
+                        minlength="8"
+                        maxlength="50"
+                        placeholder="Input password password"
+                        required
+                    />
+                    <Button type="button" @click="canSeePassword = !canSeePassword">
+                        {{ canSeePassword ? 'close' : 'see'}}
+                    </Button>
+                </div>
             </div>
+
             <Button type="submit" :disabled="!canSendReq">Log In</Button>
             <router-link :to="{ name: RouteName.SIGNUP }">Don't have an account? <span class="primary">Sign up</span></router-link>
         </form>
@@ -34,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import {reactive, computed} from "vue";
+import {reactive, computed, ref} from "vue";
 import authUsecase from "@usecase/auth/usecase";
 import {ILoginDTO} from "@repository/auth/repository";
 import Button from "@component/ui/button/Button.vue";
@@ -42,6 +48,8 @@ import Input from "@component/ui/input/Input.vue";
 
 import "./style.css"
 import {RouteName} from "@app/router/types";
+
+const canSeePassword = ref<boolean>(false)
 
 const dto = reactive<ILoginDTO>({
     usernameOrEmail: "",

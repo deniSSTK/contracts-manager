@@ -21,6 +21,16 @@
             font-weight: 100;
             animation: h1-animation infinite 20s;
         }
+
+        .input-container {
+            width: 100%;
+            display: flex;
+            gap: var(--gap-sm);
+
+            .button {
+                width: max-content;
+            }
+        }
     }
 }
 
