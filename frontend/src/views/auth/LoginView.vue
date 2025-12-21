@@ -41,6 +41,7 @@ import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 
 import "./style.css"
+import {RouteName} from "@app/router/types";
 
 const dto = reactive<ILoginDTO>({
     usernameOrEmail: "",
