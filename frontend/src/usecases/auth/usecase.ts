@@ -2,6 +2,7 @@ import authRepository, {AuthRepository, IAuthResponse, ILoginDTO, ISignupDTO} fr
 import useAuthStore, {AuthUser} from "@store/auth/store";
 import {User} from "@model/user/model";
 import {ListResult} from "../../infrastructure/api/dto";
+import Contract from "@model/contract/entity";
 
 export class AuthUsecase {
     private authRepository: AuthRepository = authRepository;
@@ -48,6 +49,10 @@ export class AuthUsecase {
 
     async refreshAccessToken(): Promise<IAuthResponse> {
         return this.authRepository.refreshAccessToken();
+    }
+
+    async getUserContracts(): Promise<Contract[]> {
+        return this.authRepository.getUserContracts()
     }
 }
 

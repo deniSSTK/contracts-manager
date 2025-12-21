@@ -15,8 +15,8 @@ import (
 )
 
 type Handler struct {
-	jwtProvider *token.JWTProvider
 	authUC      *authusecase.Usecase
+	jwtProvider *token.JWTProvider
 }
 
 func NewHandler(
@@ -187,6 +187,18 @@ func (h *Handler) Update(c *gin.Context) {
 	context.RespondWithValue(c, http.StatusOK, res)
 }
 
-func GetUserContracts(c *gin.Context) {
-	//TODO
+func (h *Handler) GetUserContracts(c *gin.Context) {
+	authUser, err := context.GetAuthUser(c)
+	if err != nil {
+		context.RespondError(c, http.StatusUnauthorized, err)
+		return
+	}
+
+	contracts, err := h.authUC.GetContractsByID(c.Request.Context(), authUser.ID)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusOK, contracts)
 }

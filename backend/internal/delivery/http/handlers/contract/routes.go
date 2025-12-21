@@ -25,8 +25,8 @@ func (r *Routes) RegisterRoutes(routes *gin.RouterGroup) {
 	group := routes.Group("/contract")
 
 	group.GET("/", r.authMiddleware.AdminOnly(), r.handler.List)
-	group.GET("/:id", r.authMiddleware.AdminOnly(), r.handler.Get)
-	group.GET("/:id/persons", r.authMiddleware.AdminOnly(), r.handler.GetPersons)
+	group.GET("/:id", r.authMiddleware.MemberOrAdmin(), r.handler.Get)
+	group.GET("/:id/persons", r.authMiddleware.MemberOrAdmin(), r.handler.GetPersons)
 	group.GET("/person/:id", r.authMiddleware.AdminOnly(), r.handler.GetContractsByPerson)
 	group.GET("/export", r.authMiddleware.AdminOnly(), r.handler.Export)
 

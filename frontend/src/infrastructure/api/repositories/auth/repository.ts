@@ -55,6 +55,10 @@ export class AuthRepository {
     async refreshAccessToken(): Promise<IAuthResponse> {
         return this.api.get("/auth/refresh/access", { auth: false })
     }
+
+    async getUserContracts(): Promise<Contract[]> {
+        return this.api.get("/auth/user/contracts")
+    }
 }
 
 const authRepository = new AuthRepository();

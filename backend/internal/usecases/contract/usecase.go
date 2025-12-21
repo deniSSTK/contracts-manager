@@ -183,3 +183,7 @@ func (uc *Usecase) ExportJSON(ctx context.Context, w io.Writer) error {
 func (uc *Usecase) List(ctx context.Context, filter contract.Filter) (*dto.ListResult[models.Contract], error) {
 	return uc.contractRepo.List(ctx, filter)
 }
+
+func (uc *Usecase) IsContractMember(ctx context.Context, personID, contractID uuid.UUID) (bool, error) {
+	return uc.contractRepo.IsPersonInContract(ctx, personID, contractID)
+}

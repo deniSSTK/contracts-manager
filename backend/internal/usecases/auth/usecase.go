@@ -6,17 +6,26 @@ import (
 	"contracts-manager/internal/domain/auth"
 	"contracts-manager/internal/infrastructure/db/models"
 	"contracts-manager/internal/infrastructure/db/repositories"
+	contractusecase "contracts-manager/internal/usecases/contract"
 	"contracts-manager/internal/utils"
 
 	"github.com/google/uuid"
 )
 
 type Usecase struct {
-	userRepo *repositories.UserRepository
+	userRepo   *repositories.UserRepository
+	contractUC *contractusecase.Usecase
 }
 
-func NewUsecase(userRepo *repositories.UserRepository) *Usecase {
-	return &Usecase{userRepo}
+func NewUsecase(
+	userRepo *repositories.UserRepository,
+	contractUC *contractusecase.Usecase,
+
+) *Usecase {
+	return &Usecase{
+		userRepo,
+		contractUC,
+	}
 }
 
 func (uc *Usecase) GetAuthUser(
@@ -97,4 +106,20 @@ func (uc *Usecase) Update(
 	}
 
 	return uc.userRepo.Update(ctx, id, data)
+}
+
+func (uc *Usecase) GetContractsByID(
+	ctx context.Context,
+	id uuid.UUID,
+) ([]models.Contract, error) {
+	user, err := uc.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.PersonID == nil {
+		return nil, ErrNilPersonID
+	}
+
+	return uc.contractUC.GetContractsByPerson(ctx, *user.PersonID)
 }

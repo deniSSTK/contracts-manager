@@ -25,10 +25,10 @@ func (r *Routes) RegisterRoutes(routes *gin.RouterGroup) {
 	group := routes.Group("/auth")
 
 	group.GET("/user/", r.authMiddleware.AdminOnly(), r.handler.List)
-	group.GET("/user/contracts", r.authMiddleware.AdminOnly(), r.handler.GetUserContracts)
-	group.GET("/user/:id", r.authMiddleware.AdminOnly(), r.handler.Get)
 	group.GET("/user/me", r.authMiddleware.Middleware(), r.handler.GetAuthUser)
+	group.GET("/user/:id", r.authMiddleware.AdminOnly(), r.handler.Get)
 	group.GET("/refresh/access", r.handler.RefreshAccessToken)
+	group.GET("/user/contracts", r.authMiddleware.Middleware(), r.handler.GetUserContracts)
 
 	group.PUT("/user/:id", r.authMiddleware.AdminOnly(), r.handler.Update)
 

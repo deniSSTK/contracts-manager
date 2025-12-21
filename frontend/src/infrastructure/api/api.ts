@@ -63,12 +63,6 @@ export class Api {
             credentials: "include",
         });
 
-        if (auth && res.status === 401) {
-            const authStore = useAuthStore();
-            authStore.logout();
-            throw new Error("Unauthorized, logged out");
-        }
-
         if (!res.ok) {
             const data: { error: string } = await res.json();
             throw new Error(`HTTP ${res.status}: ${data.error}`);
