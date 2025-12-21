@@ -37,8 +37,6 @@
 import {reactive, computed} from "vue";
 import authUsecase from "@usecase/auth/usecase";
 import {ILoginDTO} from "@repository/auth/repository";
-import router from "@app/router/routes";
-import {RouteName} from "@app/router/types";
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 
@@ -53,9 +51,7 @@ const canSendReq = computed(() => dto.usernameOrEmail.length >= 8 && dto.passwor
 
 const handleSubmit = async () => {
     if (await authUsecase.login(dto)) {
-        await router.push({
-            name: RouteName.DASHBOARD
-        })
+        window.location.reload();
     }
 }
 </script>

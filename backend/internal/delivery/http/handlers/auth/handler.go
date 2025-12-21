@@ -8,6 +8,7 @@ import (
 	"contracts-manager/internal/utils/context"
 	"contracts-manager/internal/utils/cookie"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -124,4 +125,64 @@ func (h *Handler) Get(c *gin.Context) {
 	}
 
 	context.RespondWithValue(c, http.StatusOK, user)
+}
+
+func (h *Handler) List(c *gin.Context) {
+	username := c.Query("username")
+	email := c.Query("email")
+	userType := c.Query("type")
+
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, _ := strconv.Atoi(pageStr)
+	limit, _ := strconv.Atoi(limitStr)
+
+	filter := auth.Filter{
+		Username: nil,
+		Email:    nil,
+		Type:     nil,
+		Page:     page,
+		Limit:    limit,
+	}
+
+	if username != "" {
+		filter.Username = &username
+	}
+	if email != "" {
+		filter.Email = &email
+	}
+	if userType != "" {
+		filter.Type = &userType
+	}
+
+	result, err := h.authUC.List(c.Request.Context(), filter)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusOK, result)
+}
+
+func (h *Handler) Update(c *gin.Context) {
+	userID, err := context.GetIdFromParam(c)
+	if err != nil {
+		context.RespondError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	var dto auth.UpdateDTO
+	if err = c.ShouldBindJSON(&dto); err != nil {
+		context.RespondError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	res, err := h.authUC.Update(c.Request.Context(), userID, dto)
+	if err != nil {
+		context.RespondError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.RespondWithValue(c, http.StatusOK, res)
 }

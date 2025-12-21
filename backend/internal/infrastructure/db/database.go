@@ -24,14 +24,14 @@ func NewDB(log *logger.Logger) *gorm.DB {
 		file.Close()
 	}
 
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(dbPath+"?_foreign_keys=on"), &gorm.Config{})
 	if err != nil {
 		log.Fatalf(ErrFailedToInitializeDB, err)
 	}
 
 	if err = db.AutoMigrate(
-		&models.User{},
 		&models.Person{},
+		&models.User{},
 		&models.Contract{},
 		&models.ContractPerson{},
 	); err != nil {

@@ -15,46 +15,6 @@
         gap: var(--gap-sm);
     }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-
-        thead {
-            tr {
-                th {
-                    border: var(--border);
-                    padding: var(--padding-md-comp);
-                    text-align: left;
-                }
-            }
-        }
-
-        tbody {
-            tr {
-                td {
-                    font-size: var(--font-size-sm);
-
-                    border: var(--border);
-                    padding: var(--padding-md-comp);
-
-                    span {
-                        display: inline-block;
-                        max-width: 100%;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-
-                    .actions {
-                        display: flex;
-                        gap: var(--gap-sm);
-                    }
-                }
-            }
-        }
-    }
-
     .pagination {
         display: flex;
         justify-content: center;
@@ -62,6 +22,7 @@
 
         .button {
             &.active {
+                border-color: var(--color-primary);
                 font-weight: bold;
                 background-color: var(--color-primary);
                 color: var(--white);

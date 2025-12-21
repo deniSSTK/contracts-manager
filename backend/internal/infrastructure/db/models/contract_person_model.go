@@ -12,10 +12,11 @@ const (
 )
 
 type ContractPerson struct {
-	ID         uuid.UUID `gorm:"type:char(36); primaryKey" json:"id"`
-	ContractID uuid.UUID
-	Contract   Contract `gorm:"foreignKey:ContractID"`
-	PersonID   uuid.UUID
-	Person     Person       `gorm:"foreignKey:PersonID"`
-	Role       ContractRole `gorm:"type:text; not null" json:"role"`
+	ContractID uuid.UUID `gorm:"type:char(36);primaryKey"`
+	Contract   Contract  `gorm:"constraint:OnDelete:CASCADE;foreignKey:ContractID;references:ID"`
+
+	PersonID uuid.UUID `gorm:"type:char(36);primaryKey"`
+	Person   Person    `gorm:"constraint:OnDelete:CASCADE;foreignKey:PersonID;references:ID"`
+
+	Role ContractRole `gorm:"type:text;not null"`
 }

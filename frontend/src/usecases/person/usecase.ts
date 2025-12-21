@@ -1,6 +1,7 @@
 import personRepository, {CreatePersonDTO, CreatePersonResponse, PersonRepository} from "@repository/person/repository";
-import {ListResult} from "../../infrastructure/api/dto";
+import {Format, ImportResult, ListResult} from "../../infrastructure/api/dto";
 import Person from "@model/person/model";
+import Contract from "@model/contract/entity";
 
 export class PersonUsecase {
     private personRepository: PersonRepository = personRepository;
@@ -19,6 +20,14 @@ export class PersonUsecase {
 
     async list(filters: string): Promise<ListResult<Person>> {
         return this.personRepository.list(filters);
+    }
+
+    async export(format: Format): Promise<void> {
+        return this.personRepository.export(format)
+    }
+
+    async import(file: File): Promise<ImportResult> {
+        return this.personRepository.import(file)
     }
 }
 

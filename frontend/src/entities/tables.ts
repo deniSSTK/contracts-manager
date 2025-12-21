@@ -8,6 +8,7 @@ import router from "@app/router/routes";
 import {RouteName} from "@app/router/types";
 import authUsecase from "@usecase/auth/usecase";
 import Contract from "@model/contract/entity";
+import {User} from "@model/user/model";
 
 export interface EntityFilter {
     key: string
@@ -52,7 +53,7 @@ function infoAction<T extends BaseModel>(entity: string): EntityAction<T> {
     }
 }
 
-export const entityRegistry = {
+const entityRegistry: Record<string, EntityConfig> = {
     person: {
         usecase: personUsecase,
         columns: [
@@ -65,7 +66,7 @@ export const entityRegistry = {
             {
                 key: "actions",
                 label: "actions",
-                actions: [infoAction("person")],
+                actions: [infoAction<Person>("person")],
             },
         ],
         filters: [
@@ -86,7 +87,7 @@ export const entityRegistry = {
             {
                 key: "actions",
                 label: "actions",
-                actions: [infoAction("contract")],
+                actions: [infoAction<Contract>("contract")],
             },
         ],
         filters: [
@@ -99,11 +100,21 @@ export const entityRegistry = {
     user: {
         usecase: authUsecase,
         columns: [
+            { key: "username", label: "Username" },
             { key: "email", label: "Email" },
-            { key: "role", label: "Role" },
+            { key: "type", label: "Type" },
+            { key: "personId", label: "PersonID", optional: true },
+            {
+                key: "actions",
+                label: "actions",
+                actions: [infoAction<User>("user")],
+            },
         ],
         filters: [
+            { key: "username", placeholder: "Username" },
             { key: "email", placeholder: "Email" },
+            { key: "type", placeholder: "Type" },
         ]
     }
-} satisfies Record<string, EntityConfig>
+}
+export default entityRegistry;

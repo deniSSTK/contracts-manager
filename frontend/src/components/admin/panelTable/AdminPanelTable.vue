@@ -75,7 +75,7 @@ import { useRoute } from "vue-router";
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
 
-import { entityRegistry } from "@entity/tables";
+import entityRegistry from "@entity/tables";
 
 import "./admin-panel-table.css";
 
@@ -98,10 +98,6 @@ const limit = 10;
 const totalPages = ref(1);
 
 const filters = reactive<Record<string, string>>({});
-
-entity.value.filters.forEach(f => {
-    filters[f.key] = "";
-});
 
 async function fetchData() {
     const params = new URLSearchParams({
@@ -147,6 +143,10 @@ watch(
 );
 
 onMounted(async () => {
-    await fetchData()
+    entity.value.filters.forEach(f => {
+        filters[f.key] = "";
+    });
+
+    await fetchData();
 });
 </script>

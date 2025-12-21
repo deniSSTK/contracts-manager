@@ -1,0 +1,19 @@
+[
+  {
+    "id": "104adb92-8f90-46ee-938d-d4a634a06c30",
+    "createdAt": "2025-12-20T23:03:39.023260284Z",
+    "updatedAt": "2025-12-21T00:15:35.11595028Z",
+    "deletedAt": null,
+    "code": "JSON-123",
+    "title": "JSON Contract",
+    "description": "Contract description"
+  },
+  {
+    "id": "204adb92-8f90-46ee-938d-d4a634a06c30",
+    "createdAt": "2025-12-20T23:03:39.023260284Z",
+    "updatedAt": "2025-10-10T00:15:35.11543028Z",
+    "deletedAt": null,
+    "code": "JSN-01",
+    "title": "Some Contract"
+  }
+]

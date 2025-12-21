@@ -53,7 +53,6 @@
 import { reactive, computed } from "vue";
 import authUsecase from "@usecase/auth/usecase";
 import { ISignupDTO } from "@repository/auth/repository";
-import router, { RouteName } from "@app/router/routes";
 
 import Button from "@component/ui/button/Button.vue";
 import Input from "@component/ui/input/Input.vue";
@@ -74,9 +73,7 @@ const canSendReq = computed(() =>
 
 const handleSubmit = async () => {
     if (await authUsecase.signup(dto)) {
-        await router.push({
-            name: RouteName.DASHBOARD,
-        });
+        window.location.reload();
     }
 };
 </script>

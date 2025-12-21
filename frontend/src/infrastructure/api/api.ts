@@ -2,9 +2,14 @@ import useAuthStore from "@store/auth/store";
 
 type Methods = "GET" | "POST" | "PUT" | "DELETE";
 
+type ResponseType = 'blob' | 'json'
+
 interface RequestOptions {
     extraHeaders?: Record<string, string>;
     auth?: boolean;
+    responseType?: ResponseType;
+
+    isFormData?: boolean;
 }
 
 export class Api {
@@ -31,18 +36,30 @@ export class Api {
         body?: any,
         options: RequestOptions = {}
     ): Promise<T> {
-        const { extraHeaders = {}, auth = true } = options;
+        const {
+            extraHeaders = {},
+            auth = true,
+            responseType = 'json',
+            isFormData = false,
+        } = options;
 
         const headers: Record<string, string> = {
-            "Content-Type": "application/json",
             ...(auth ? await this.getAuthHeaders() : {}),
             ...extraHeaders,
         };
 
+        if (!isFormData && responseType === "json") {
+            headers["Content-Type"] = "application/json";
+        }
+
         const res = await fetch(`${this.backendUrl}${endpoint}`, {
             method,
             headers,
-            body: body ? JSON.stringify(body) : undefined,
+            body: body
+                ? isFormData
+                    ? body
+                    : JSON.stringify(body)
+                : undefined,
             credentials: "include",
         });
 
@@ -55,6 +72,10 @@ export class Api {
         if (!res.ok) {
             const data: { error: string } = await res.json();
             throw new Error(`HTTP ${res.status}: ${data.error}`);
+        }
+
+        if (responseType === 'blob') {
+            return (await res.blob()) as T;
         }
 
         const contentType = res.headers.get("content-type");

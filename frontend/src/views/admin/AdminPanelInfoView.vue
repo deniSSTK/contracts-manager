@@ -39,13 +39,16 @@
             </div>
         </template>
 
-
         <template v-if="created">
             <span v-if="createdError" class="red">An error occurred</span>
             <span v-else class="primary">Success</span>
         </template>
+
         <Button v-else type="submit">{{ isNew ? 'Create' : 'Update' }}</Button>
     </form>
+
+    <PersonsByContract v-if="entity === 'contract' && !isNew"/>
+    <ContractsByPerson v-if="entity === 'person' && !isNew"/>
 </template>
 
 <script lang="ts" setup>
@@ -55,6 +58,9 @@ import infoEntities from "@entity/info";
 import Input from "@component/ui/input/Input.vue";
 import Button from "@component/ui/button/Button.vue";
 import {RouteName} from "@app/router/types";
+
+import PersonsByContract from "@component/admin/PersonsByContract.vue";
+import ContractsByPerson from "@component/admin/ContractsByPerson.vue";
 
 const route = useRoute()
 

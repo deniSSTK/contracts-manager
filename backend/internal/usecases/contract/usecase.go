@@ -52,10 +52,10 @@ func (uc *Usecase) Update(
 		data["description"] = *dto.Description
 	}
 	if dto.StartDate != nil {
-		data["start_date"] = *dto.StartDate
+		data["startDate"] = *dto.StartDate
 	}
 	if dto.EndDate != nil {
-		data["end_date"] = *dto.EndDate
+		data["endDate"] = *dto.EndDate
 	}
 
 	return uc.contractRepo.Update(ctx, id, data)

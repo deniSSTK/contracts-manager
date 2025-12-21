@@ -1,6 +1,6 @@
 interface BaseModel {
     id: string;
-    cratedAt: string;
+    createdAt: string;
     updatedAt: string;
     deletedAt?: string | null;
 }

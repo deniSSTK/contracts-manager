@@ -74,7 +74,7 @@ const infoEntities: Record<string, Info> = {
             ...BaseModelRows,
             {key: 'username', label: 'Username', canChange: true, min: 5, max: 50},
             {key: 'email', label: 'Email', canChange: true, max: 100},
-            {key: 'type', label: 'Type', canChange: true},
+            {key: 'type', label: 'Type', values: ["admin", "regular"], canChange: true},
             {key: 'personId', label: 'PersonID', optional: true, canChange: true},
         ]
     },

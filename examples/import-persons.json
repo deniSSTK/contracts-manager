@@ -1,0 +1,21 @@
+[
+  {
+    "id": "01ff0764-ec73-4c4f-991c-b0c608526d9e",
+    "createdAt": "2025-12-20T23:04:53.098828298Z",
+    "updatedAt": "2025-12-21T00:31:56.43707458Z",
+    "deletedAt": null,
+    "type": "entity",
+    "name": "importjson",
+    "code": "JSON_1",
+    "email": "json@email.com"
+  },
+  {
+    "id": "02ff0764-ec73-4c4f-991c-b0c608526d9e",
+    "createdAt": "2025-12-20T23:10:50.49523941Z",
+    "updatedAt": "2025-12-20T23:10:50.49523941Z",
+    "deletedAt": null,
+    "type": "individual",
+    "name": "imported3",
+    "code": "JSON_2"
+  }
+]

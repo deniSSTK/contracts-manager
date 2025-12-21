@@ -18,6 +18,7 @@
       "@view/*": ["views/*"],
       "@entity/*": ["entities/*"],
       "@app/*": ["app/*"],
+      "@util/*": ["utils/*"],
       "@repository/*": ["infrastructure/api/repositories/*"],
     }
   },

@@ -2,8 +2,10 @@ package repositories
 
 import (
 	"context"
+	"contracts-manager/internal/delivery/http/dto"
 	"contracts-manager/internal/domain/auth"
 	"contracts-manager/internal/infrastructure/db/models"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -35,7 +37,7 @@ func (r *UserRepository) Create(
 	return newUser.ID, nil
 }
 
-func (r *UserRepository) GetUserByID(
+func (r *UserRepository) GetByID(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*models.User, error) {
@@ -93,4 +95,73 @@ func (r *UserRepository) CheckEmailExists(
 	}
 
 	return count > 0, nil
+}
+
+func (r *UserRepository) List(
+	ctx context.Context,
+	filter auth.Filter,
+) (*dto.ListResult[models.User], error) {
+	var users []models.User
+	var total int64
+
+	query := r.db.WithContext(ctx).Model(&models.User{})
+
+	if filter.Username != nil && *filter.Username != "" {
+		query = query.Where(
+			"LOWER(username) LIKE ?",
+			"%"+strings.ToLower(*filter.Username)+"%",
+		)
+	}
+
+	if filter.Email != nil && *filter.Email != "" {
+		query = query.Where(
+			"LOWER(email) LIKE ?",
+			"%"+strings.ToLower(*filter.Email)+"%",
+		)
+	}
+
+	if filter.Type != nil && *filter.Type != "" {
+		query = query.Where(
+			"LOWER(type) LIKE ?",
+			"%"+strings.ToLower(*filter.Type)+"%",
+		)
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	if filter.Page <= 0 {
+		filter.Page = 1
+	}
+	if filter.Limit <= 0 {
+		filter.Limit = 20
+	}
+
+	offset := (filter.Page - 1) * filter.Limit
+	if err := query.Limit(filter.Limit).Offset(offset).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return &dto.ListResult[models.User]{
+		Data:  users,
+		Page:  filter.Page,
+		Limit: filter.Limit,
+		Total: total,
+	}, nil
+}
+
+func (r *UserRepository) Update(
+	ctx context.Context,
+	id uuid.UUID,
+	data map[string]interface{},
+) (*models.User, error) {
+	if err := r.db.WithContext(ctx).
+		Model(&models.User{}).
+		Where("id = ?", id).
+		Updates(data).Error; err != nil {
+		return nil, err
+	}
+
+	return r.GetByID(ctx, id)
 }
