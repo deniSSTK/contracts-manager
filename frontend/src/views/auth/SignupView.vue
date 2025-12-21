@@ -36,7 +36,7 @@
                         :type="canSeePassword ? 'text' : 'password'"
                         minlength="8"
                         maxlength="50"
-                        placeholder="Input your password"
+                        placeholder="Create your password"
                         required
                     />
                     <Button type="button" @click="canSeePassword = !canSeePassword">

@@ -1,7 +1,7 @@
 <template>
     <main class="page">
         <header>
-            <h1>Admin Panel: <span v-if="route.name != RouteName.ADMIN_PANEL">{{route.params.entity}}</span> </h1>
+            <h1>Admin Panel<span v-if="route.name != RouteName.ADMIN_PANEL">: {{route.params.entity}}</span> </h1>
             <router-link :to="{ name: RouteName.DASHBOARD }">
                 <Button>To Dashboard</Button>
             </router-link>

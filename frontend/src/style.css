@@ -89,8 +89,7 @@ svg {
 
 .page {
     width: 100%;
-    min-height: 100dvh;
-    height: max-content;
+    height: 100%;
 
     display: flex;
     flex-direction: column;

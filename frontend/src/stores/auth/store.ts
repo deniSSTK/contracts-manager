@@ -63,11 +63,15 @@ const useAuthStore = defineStore('auth', {
             }
         },
 
-        logout(): void {
+        async logout(): Promise<void> {
+            await authUsecase.logout()
+
             this.accessToken = null
             this.authUser = null
             this.exp = null
             this.loaded = false
+
+            window.location.reload();
         },
     },
 })

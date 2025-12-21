@@ -1,7 +1,7 @@
 <template>
     <h1>Person Contracts</h1>
 
-    <span v-if="!loading && contracts.length === 0">Person does not have an contract yet</span>
+    <span v-if="!loading && contracts.length === 0">Person does not have any contract yet</span>
 
     <table v-else>
         <thead>

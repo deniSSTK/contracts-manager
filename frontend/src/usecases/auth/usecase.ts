@@ -54,6 +54,10 @@ export class AuthUsecase {
     async getUserContracts(): Promise<Contract[]> {
         return this.authRepository.getUserContracts()
     }
+
+    async logout(): Promise<void> {
+        return this.authRepository.logout()
+    }
 }
 
 const authUsecase = new AuthUsecase();

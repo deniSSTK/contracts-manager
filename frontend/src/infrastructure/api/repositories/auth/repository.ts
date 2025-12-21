@@ -59,6 +59,10 @@ export class AuthRepository {
     async getUserContracts(): Promise<Contract[]> {
         return this.api.get("/auth/user/contracts")
     }
+
+    async logout(): Promise<void> {
+        return this.api.delete("/auth/logout")
+    }
 }
 
 const authRepository = new AuthRepository();

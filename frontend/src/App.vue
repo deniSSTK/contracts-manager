@@ -1,10 +1,10 @@
 <template>
+    <Header />
     <router-view />
-<!--    <Footer />-->
 
     <ContractPreviewPopup />
 </template>
 <script setup lang="ts">
 import ContractPreviewPopup from "@component/popup/contractPreview/ContractPreviewPopup.vue";
-import Footer from "@component/footer/Footer.vue";
+import Header from "@component/header/Header.vue";
 </script>
