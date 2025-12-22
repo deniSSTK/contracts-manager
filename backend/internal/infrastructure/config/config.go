@@ -38,7 +38,7 @@ func NewConfig() *Config {
 		JWTSecret: utils.EnvMust("JWT_SECRET", log),
 
 		Admin: auth.SignupDTO{
-			Username: utils.GetEnv("ADMIN_USERNAME", "admin"),
+			Username: utils.GetEnv("ADMIN_USERNAME", "admin_user"),
 			Email:    utils.GetEnv("ADMIN_EMAIL", "admin@email.com"),
 			Password: utils.GetEnv("ADMIN_PASSWORD", "admin_pass"),
 			Type:     &admintype,

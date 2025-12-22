@@ -28,7 +28,7 @@ The `.env` file contains default admin credentials that are used to access the s
 You can change them to whatever you want:
 
 ```env
-ADMIN_USERNAME=admin
+ADMIN_USERNAME=admin_user
 ADMIN_EMAIL=admin@email.com
 ADMIN_PASSWORD=admin_pass
 ```
